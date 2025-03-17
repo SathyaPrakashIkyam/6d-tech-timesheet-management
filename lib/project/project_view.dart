@@ -130,9 +130,13 @@ class _ProjectViewState extends State<ProjectView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  decoration: const BoxDecoration(
+                                  decoration:  BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                    border: Border.all(color: Colors.grey)
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,15 +154,15 @@ class _ProjectViewState extends State<ProjectView> {
                                         ),
                                       ),
                                       const SizedBox(height: 30,),
-                                      Divider(height: 0.5,color: Colors.grey[500],thickness: 0.5,),
+                                      const Divider(height: 0.5,color: Colors.grey,thickness: 0.5,),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 15, bottom: 15, left: 18, right: 18),
                                         child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             SizedBox(
-                                              width: 300,
+                                              // width: 300,
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -179,7 +183,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                         child: Row(
                                                           children: [
                                                             SizedBox(
-                                                                width: 100,
+                                                                width: 70,
                                                                 child: Text("Project", style: TextStyle(color: Colors.indigo, fontSize: 16, fontWeight: FontWeight.bold),)
                                                             ),
                                                             Text(": "),
@@ -193,7 +197,7 @@ class _ProjectViewState extends State<ProjectView> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: 300,
+                                              // width: 300,
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -214,7 +218,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                         child: Row(
                                                           children: [
                                                             SizedBox(
-                                                                width: 100,
+                                                                width: 70,
                                                                 child: Text("Allocated", style: TextStyle(color: Colors.indigo, fontSize: 16, fontWeight: FontWeight.bold),)
                                                             ),
                                                             Text(": "),
@@ -228,7 +232,7 @@ class _ProjectViewState extends State<ProjectView> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: 300,
+                                              // width: 300,
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -249,7 +253,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                         child: Row(
                                                           children: [
                                                             SizedBox(
-                                                                width: 100,
+                                                                width: 70,
                                                                 child: Text("Balance", style: TextStyle(color: Colors.indigo, fontSize: 16, fontWeight: FontWeight.bold),)
                                                             ),
                                                             Text(": "),
@@ -273,7 +277,7 @@ class _ProjectViewState extends State<ProjectView> {
                                             padding: const EdgeInsets.only(left: 18, top: 20, bottom: 20),
                                             child: Row(
                                               crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Column(
@@ -515,7 +519,7 @@ class _ProjectViewState extends State<ProjectView> {
                                 ),
                                 const SizedBox(height: 20,),
                                 Container(
-                                  decoration: const BoxDecoration(
+                                  decoration:  const BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
                                   ),
@@ -528,9 +532,12 @@ class _ProjectViewState extends State<ProjectView> {
                                       // ),
                                       // Divider(height: 0.5,color: Colors.grey[500],thickness: 0.5,),
                                       Container(
-                                        decoration: const BoxDecoration(
+                                        decoration:  const BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            topRight: Radius.circular(10),
+                                          ),
                                         ),
                                         child: ListView.builder(
                                           shrinkWrap: true,
@@ -548,7 +555,10 @@ class _ProjectViewState extends State<ProjectView> {
                                                         color: Colors.grey,
                                                         width: 1
                                                       ),
-                                                      borderRadius: BorderRadius.circular(2)
+                                                      borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(10),
+                                                        topRight: Radius.circular(10),
+                                                      ),
                                                     ),
                                                     child: Column(
                                                       children: [
@@ -563,19 +573,48 @@ class _ProjectViewState extends State<ProjectView> {
                                                           ),
                                                         ),
                                                         Divider(height: 0.5,color: Colors.grey[500],thickness: 0.5,),
+                                                        Container(
+                                                          color: Colors.grey[100],
+                                                          child: IgnorePointer(
+                                                            ignoring: true,
+                                                            child: MaterialButton(
+                                                              onPressed: () {
+
+                                                              },
+                                                              hoverColor: Colors.transparent,
+                                                              hoverElevation: 0,
+                                                              child: const Padding(
+                                                                padding: EdgeInsets.only(left: 18, top: 10, bottom: 10),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Expanded(child: Text("ID", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),)),
+                                                                    Expanded(child: Text("WBS Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                                                                    Expanded(child: Text("Priority", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                                                                    Expanded(child: Text("Status", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                         ListView.builder(
                                                           itemCount: displayListItems.length,
                                                           shrinkWrap: true,
                                                           itemBuilder: (context, index) {
                                                             return Padding(
                                                               padding: const EdgeInsets.only(left: 18, top: 10, bottom: 10),
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(child: Text(displayListItems[index]["id"])),
-                                                                  Expanded(child: Text(displayListItems[index]["projectName"])),
-                                                                  Expanded(child: Text(displayListItems[index]["priority"])),
-                                                                  Expanded(child: Text(displayListItems[index]["status"])),
-                                                                ],
+                                                              child: MaterialButton(
+                                                                onPressed: () {
+
+                                                                },
+                                                                child: Row(
+                                                                  children: [
+                                                                    Expanded(child: Text(displayListItems[index]["id"])),
+                                                                    Expanded(child: Text(displayListItems[index]["projectName"])),
+                                                                    Expanded(child: Text(displayListItems[index]["priority"])),
+                                                                    Expanded(child: Text(displayListItems[index]["status"])),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             );
                                                           },),
