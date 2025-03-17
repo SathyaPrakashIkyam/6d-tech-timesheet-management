@@ -208,7 +208,13 @@ class _ListProjectsState extends State<ListProjects> {
                                           MaterialButton(height: 50,
                                             hoverColor: Colors.blue[50],
                                             onPressed: (){
-
+                                            print("------ project list -------");
+                                            print(displayListItems[index]);
+                                            Navigator.pushNamed(context, "/projectView", arguments: ViewProjectsArguments(
+                                              drawerWidth: 200,
+                                              selectedDestination: 1,
+                                              projectData: displayListItems[index],
+                                            ));
                                             },
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 18.0,top: 4,bottom: 3),

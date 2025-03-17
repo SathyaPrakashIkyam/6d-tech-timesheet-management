@@ -159,7 +159,7 @@ class WbsPriorityChart extends StatelessWidget {
           backgroundColor: Colors.blue[100],
           color: Colors.blue,
           minHeight: 6,
-          borderRadius: BorderRadius.circular(4),
+          // borderRadius: BorderRadius.circular(4),
         ),
         const SizedBox(height: 10),
       ],

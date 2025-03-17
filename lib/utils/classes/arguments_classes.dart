@@ -4,6 +4,13 @@ class ListProjectsArguments {
   ListProjectsArguments({required this.drawerWidth, required this.selectedDestination});
 }
 
+class ViewProjectsArguments {
+  final double drawerWidth;
+  final double selectedDestination;
+  final Map projectData;
+  ViewProjectsArguments({required this.drawerWidth, required this.selectedDestination, required this.projectData,});
+}
+
 class WBSArguments {
   final double drawerWidth;
   final double selectedDestination;

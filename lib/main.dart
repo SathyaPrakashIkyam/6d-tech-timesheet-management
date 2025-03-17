@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:timesheet_management/dashboard/dashboard.dart';
 import 'package:timesheet_management/login_screen/login_screen.dart';
 import 'package:timesheet_management/project/list_projects.dart';
+import 'package:timesheet_management/project/project_view.dart';
 import 'package:timesheet_management/timesheet/list_timesheet.dart';
 import 'package:timesheet_management/timesheet/weekly_table.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
@@ -47,6 +48,15 @@ class MyApp extends StatelessWidget {
             newScreen =  ListProjects(args: listProjectsArgs);
           }
           break;
+          case SixDRoutes.projectView: {
+            ViewProjectsArguments viewProjectsArgs;
+            if(settings.arguments != null){
+              viewProjectsArgs = settings.arguments as ViewProjectsArguments;
+            } else {
+              viewProjectsArgs = ViewProjectsArguments(drawerWidth: 200, selectedDestination: 1,projectData: {});
+            }
+            newScreen = ProjectView(args: viewProjectsArgs, selectedItem: {},);
+          }
           case SixDRoutes.wbs: {
             WBSArguments wbsArguments;
             if(settings.arguments!=null) {
