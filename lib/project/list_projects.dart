@@ -17,7 +17,7 @@ class _ListProjectsState extends State<ListProjects> {
 
   final List displayListItems = [
     {
-      'id': '244444246',
+      'id': '2444',
       'name': 'Project 01',
       'priority': 'High',
       'priorityColor': Colors.green,
@@ -208,8 +208,6 @@ class _ListProjectsState extends State<ListProjects> {
                                           MaterialButton(height: 50,
                                             hoverColor: Colors.blue[50],
                                             onPressed: (){
-                                            print("------ project list -------");
-                                            print(displayListItems[index]);
                                             Navigator.pushNamed(context, "/projectView", arguments: ViewProjectsArguments(
                                               drawerWidth: 200,
                                               selectedDestination: 1,
