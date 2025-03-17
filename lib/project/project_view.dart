@@ -39,7 +39,8 @@ class _ProjectViewState extends State<ProjectView> {
       'statusColor': Colors.orange,
       'startDate': '16/12/2024',
       'dueDate': '16/12/2024',
-      'members': ['Rahul',]
+      'members': ['Rahul',],
+      'hours': '40',
     },
     {
       'id': '2334',
@@ -51,7 +52,8 @@ class _ProjectViewState extends State<ProjectView> {
       'statusColor': Colors.green,
       'startDate': '18/12/2024',
       'dueDate': '18/12/2024',
-      'members': ['Ganesh' ]
+      'members': ['Ganesh' ],
+      'hours': '80',
     },
     {
       'id': '2414',
@@ -63,7 +65,8 @@ class _ProjectViewState extends State<ProjectView> {
       'statusColor': Colors.red,
       'startDate': '20/12/2024',
       'dueDate': '20/12/2024',
-      'members': [ 'Akhil', 'Kiran',"Tejes"]
+      'members': [ 'Akhil', 'Kiran',"Tejas"],
+      'hours': '100',
     },
 
   ];
@@ -591,6 +594,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                                     Expanded(child: Text("WBS Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                                                                     Expanded(child: Text("Priority", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                                                                     Expanded(child: Text("Status", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                                                                    Expanded(child: Text("Hours", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                                                                   ],
                                                                 ),
                                                               ),
@@ -613,6 +617,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                                     Expanded(child: Text(displayListItems[index]["projectName"])),
                                                                     Expanded(child: Text(displayListItems[index]["priority"])),
                                                                     Expanded(child: Text(displayListItems[index]["status"])),
+                                                                    Expanded(child: Text(displayListItems[index]["hours"])),
                                                                   ],
                                                                 ),
                                                               ),
