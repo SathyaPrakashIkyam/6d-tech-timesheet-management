@@ -1,6 +1,19 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
+
+import 'package:timesheet_management/dashboard/dashboard.dart';
+import 'package:timesheet_management/login_screen/login_screen.dart';
+import 'package:timesheet_management/project/list_projects.dart';
+import 'package:timesheet_management/timesheet/list_timesheet.dart';
+import 'package:timesheet_management/timesheet/weekly_table.dart';
+import 'package:timesheet_management/utils/classes/arguments_classes.dart';
+import 'package:timesheet_management/wbs/list_wbs.dart';
 import 'package:url_strategy/url_strategy.dart';
+
+import 'utils/classes/routes.dart';
 void main() {
+
   setPathUrlStrategy();
   runApp(const MyApp());
 }
@@ -10,118 +23,87 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      initialRoute: "/",
+      routes: {
+        "/":(context) => const InitialScreen(),
+      },
+      onGenerateRoute: (RouteSettings settings) {
+        Widget newScreen;
+        switch (settings.name){
+          case SixDRoutes.homeRoute: {
+            newScreen = const InitialScreen();
+          }
+          break;
+          case SixDRoutes.projects: {
+            ListProjectsArguments listProjectsArgs;
+
+            if(settings.arguments!=null) {
+              listProjectsArgs = settings.arguments as ListProjectsArguments;
+            } else {
+              listProjectsArgs = ListProjectsArguments(drawerWidth: 200, selectedDestination: 1);
+            }
+            newScreen =  ListProjects(args: listProjectsArgs);
+          }
+          break;
+          case SixDRoutes.wbs: {
+            WBSArguments wbsArguments;
+            if(settings.arguments!=null) {
+              wbsArguments = settings.arguments as WBSArguments;
+            } else {
+              wbsArguments = WBSArguments(drawerWidth: 200, selectedDestination: 1);
+            }
+            newScreen =  ListWBS(args: wbsArguments);
+          }
+          break;
+          case SixDRoutes.timesheet: {
+            ListTimeSheetArguments listTimesheetArguments;
+            if(settings.arguments!=null) {
+              listTimesheetArguments = settings.arguments as ListTimeSheetArguments;
+            } else {
+              listTimesheetArguments = ListTimeSheetArguments(drawerWidth: 200, selectedDestination: 1);
+            }
+            newScreen =  ListTimesheet(args: listTimesheetArguments);
+          }
+          default: newScreen = const InitialScreen();
+        }
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 500),
+          reverseTransitionDuration: const Duration(milliseconds: 500),
+          pageBuilder: (context, animation, secondaryAnimation) => newScreen,
+          settings: settings,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        );
+      },
+      // home: InitialScreen(),
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class InitialScreen extends StatefulWidget {
+  const InitialScreen({super.key});
+
+  @override
+  State<InitialScreen> createState() => _InitialScreenState();
+}
+
+class _InitialScreenState extends State<InitialScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor:  Colors.blue.shade900,
-        actions: [ Image.asset("assets/logo/sap.png", width: 80),],
-      ),
-      body: Stack(
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [// Left Side - Login Form
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(30),
-                  width: 400,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        "Log In",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: "Email ID",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 45,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade900,
-                          ),
-                          onPressed: () {},
-                          child: const Text("Login"),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text.rich(
-                        TextSpan(
-                          text: "Don't have an account? ",
-                          children: [
-                            TextSpan(
-                              text: "Create Account",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 300,width: 100,),
-              // Right Side - Illustration
-              Center(
-                child: Stack(
-                  children: [
-                    Image.asset("assets/logo/illustration.png", width: 400),
-
-                  ],
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+    return window.sessionStorage["login"] == "success" ? const Dashboard() :const LoginScreen();
   }
 }
+
+
+
+
+
+
+
+
