@@ -24,10 +24,26 @@ class _UserListState extends State<UserList> {
   getUserList() async{
     String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/get-all-user";
 
-    var response = await getData(url: url);
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      displayUserList = response;
+      setState(() {
+
+      });
+      print('---- user list -----');
+      print(displayUserList);
+    } else {
+      print('---- Failed to fetch User list ----');
+    }
 
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,6 +189,91 @@ class _UserListState extends State<UserList> {
                                       ],
                                     ),
                                   ),
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                    itemCount: displayUserList.length + 1,
+                                      itemBuilder: (context, index) {
+                                        if(index < displayUserList.length){
+                                          return Column(
+                                            children: [
+                                              MaterialButton(
+                                                  onPressed: () {
+
+                                                  },
+                                                child: Padding(
+                                                    padding: const EdgeInsets.only(left: 18.0,top: 4,bottom: 3),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['user_name']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['email']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['department']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['roles']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['designation']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: Text(displayUserList[index]['user_set']??"")
+                                                            ),
+                                                          )
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        } else {
+                                          return Column(
+                                            children: [
+                                              Divider(height: 0.5, color: Colors.grey[300], thickness: 0.5),
+                                              const SizedBox(height: 10,),
+                                            ],
+                                          );
+                                        }
+                                      },
+                                  )
                                 ],
                               ),
                             ),
