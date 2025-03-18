@@ -123,6 +123,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         ),
                                                       )),
                                                   Expanded(
+                                                      flex: 2,
                                                       child: Padding(
                                                         padding: EdgeInsets.only(top: 4.0),
                                                         child: SizedBox(height: 25,
@@ -220,9 +221,11 @@ class _ListProjectsState extends State<ListProjects> {
                                                         ),
                                                       )),
                                                   Expanded(
+                                                    flex: 2,
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top: 4.0),
-                                                        child: SizedBox(height: 25,
+                                                        child: SizedBox(
+                                                            height: 25,
                                                          child: Text("${displayListItems[index]['project_name']}$index")
                                                         ),
                                                       )),

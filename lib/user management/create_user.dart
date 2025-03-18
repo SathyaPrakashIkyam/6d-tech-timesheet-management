@@ -75,21 +75,24 @@ class _CreateUsersState extends State<CreateUsers> {
     ),
   ];
 
-  Future postUser(Map tempJson) async {
+  Future<bool> postUser(Map tempJson) async {
     String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/add-usermaster";
-    print(url);
-    var response = await postData(url: url,requestBody: tempJson,context: context);
+    var response = await postData(url: url, requestBody: tempJson, context: context);
 
     if (response != null) {
-      print(response);
-    }
+      print("Response from API: $response");
 
-    return [];
+      // Check if status is 200 (Success)
+      if (response is Map && response.containsKey("status") && response["status"] == 200) {
+        return true;
+      }
+    }
+    return false;
   }
 
   List managerList = [];
   getManagerList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/get-all-user";
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/get_users_by_role/Manager";
 
     var response = await getData(context: context,url: url);
     if (response != null) {
@@ -131,62 +134,83 @@ class _CreateUsersState extends State<CreateUsers> {
                     preferredSize: const Size.fromHeight(60),
                     child: AppBar(
                       title: const Text("Create Users", style: TextStyle(color: Colors.black)),
+                      leading: IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/userList",arguments: UserListArguments(drawerWidth: 200,selectedDestination: 4));
+                          },
+                          icon: const Icon(Icons.arrow_back, color: Colors.black,)
+                      ),
                       backgroundColor: Colors.white,
-                      iconTheme: const IconThemeData(color: Colors.black),
                       actions: [
                         Padding(
                           padding: const EdgeInsets.only(top: 15, bottom: 10, right: 20),
                           child: MaterialButton(
                             color: Colors.blue,
-                            onPressed: () async{
+                            onPressed: () async {
                               Map createUser = {
                                 "active": true,
                                 "designation": userDesignation.text,
                                 "rate_card": 1000,
-                                "user_name" : userName.text,
-                                "email" : userEmail.text,
-                                "roles" : userRole.text,
+                                "user_name": userName.text,
+                                "email": userEmail.text,
+                                "roles": userRole.text,
                                 "department": userDepartment.text,
-                                "user_set" : selectedUserId,
-                                "password" : userPassword.text,
-                                // "id": selectedUserId,
+                                "user_set": selectedUserId,
+                                "password": userPassword.text,
                               };
 
                               bool success = await postUser(createUser);
-                              if(success) {
-                                showDialog(
+
+                              // Show pop-up and clear text fields
+                              if (success) {
+                                if(mounted){
+                                  showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text("Sucess"),
-                                        content: Text("User Created Successfully!"),
+                                        title: const Text("Success", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+                                        content: const Text("User Created Successfully!", style: TextStyle(fontSize: 16)),
                                         actions: [
                                           TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("OK")
-                                          )
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: Colors.white,
+                                              backgroundColor: Colors.green,
+                                            ),
+                                            child: const Text("OK"),
+                                          ),
                                         ],
                                       );
                                     },
-                                );
-                                userDesignation.clear();
-                                userName.clear();
-                                userEmail.clear();
-                                userRole.clear();
-                                userDepartment.clear();
-                                userPassword.clear();
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("failed to Create User")));
-                              }
-                              // if(_formKey.currentState!.validate()){
-                              //
-                              // }
+                                  );
+                                }
 
+
+
+                                setState(() {
+                                  userDesignation.clear();
+                                  userName.clear();
+                                  userEmail.clear();
+                                  userRole.clear();
+                                  userDepartment.clear();
+                                  userPassword.clear();
+                                  roleDrop="Select Role";
+                                  depDrop="Select Department";
+                                  userType.clear();
+                                  selectedUserId="";
+                                });
+
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Failed to Create User")),
+                                );
+                              }
                             },
-                            child: const Text("Create",style: TextStyle(color: Colors.white)),
-                          ),
+                            child: const Text("Create", style: TextStyle(color: Colors.white)),
+                          )
+
                         )
                       ],
                     )
@@ -532,7 +556,7 @@ class _CreateUsersState extends State<CreateUsers> {
       border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
       constraints:  BoxConstraints(maxHeight:error==true? 60: 35),
       hintText: hintText,
-      hintStyle: const TextStyle(fontSize: 17, color: Color(0xB2000000)),
+      hintStyle: const TextStyle(fontSize: 17),
       counterText: '',
       contentPadding: const EdgeInsets.fromLTRB(12, 00, 0, 0),
       disabledBorder: OutlineInputBorder(

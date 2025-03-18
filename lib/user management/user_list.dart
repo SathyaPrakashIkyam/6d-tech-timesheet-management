@@ -30,8 +30,6 @@ class _UserListState extends State<UserList> {
       setState(() {
 
       });
-      print('---- user list -----');
-      print(displayUserList);
     } else {
       print('---- Failed to fetch User list ----');
     }
@@ -196,6 +194,7 @@ class _UserListState extends State<UserList> {
                                         if(index < displayUserList.length){
                                           return Column(
                                             children: [
+                                              if(displayUserList[index]['roles'] != "Admin")
                                               MaterialButton(
                                                   onPressed: () {
 
