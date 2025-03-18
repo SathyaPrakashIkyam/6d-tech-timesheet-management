@@ -25,12 +25,7 @@ import '../../main.dart';
       responseBody = jsonDecode(response.body);
       if (responseBody.runtimeType.toString() != "List<dynamic>") {
         log("Its a Map Data");
-        if (responseBody.containsKey("status")) {
-          log(response.body);
           return jsonDecode(response.body);
-        } else {
-          return null;
-        }
       }
       else  if (responseBody.containsKey("error")) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,34 +49,14 @@ import '../../main.dart';
 }
 
 
-// Post API.
-Future postApiData(String url, dynamic requestBody) async {
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // String basicAuth=prefs.getString('basicAuth')??"";
 
-  final response = await http.post(
-    Uri.parse(url),
-    headers: {
-      "content-type": "application/json;charset=utf-8",
-      // 'authorization': basicAuth
-    },
-    body: jsonEncode(requestBody),
-  );
-  try {
-    return jsonDecode(response.body);
-  }
-  catch(e){
-    return {"error":"Something Went Wrong"};
-  }
-
-}
 
 // Update API.
 Future updateData(String url, dynamic requestBody) async {
   // SharedPreferences prefs = await SharedPreferences.getInstance();
   // String basicAuth=prefs.getString('basicAuth')??"";
 
-  final response = await http.put(
+  final response = await http.patch(
     Uri.parse(url),
     headers: {
       "content-type": "application/json;charset=utf-8",
@@ -90,13 +65,97 @@ Future updateData(String url, dynamic requestBody) async {
     body: jsonEncode(requestBody),
   );
   try {
-    return jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      dynamic responseBody;
+      try {
+        responseBody = jsonDecode(response.body);
+        if (responseBody.runtimeType.toString() != "List<dynamic>") {
+          log("Its a Map Data");
+          if (responseBody.containsKey("status")) {
+            log(response.body);
+            return jsonDecode(response.body);
+          } else {
+            return null;
+          }
+        }
+        else  if (responseBody.containsKey("error")) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('authToken', "");
+          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyApp()));
+          return null;
+        }
+        else {
+          log("Its a List");
+          return null;
+        }
+      } catch (e) {
+        log(e.toString());
+        return {};
+      }
+    } else {
+      log("++++++++++Status Code +++++++++++++++");
+      log(response.statusCode.toString());
+      return null;
+    }
   }
   catch(e){
-    return {"error":"Something Went Wrong"};
+        return null;
   }
 
 }
+
+Future deleteApi(String url) async {
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String basicAuth=prefs.getString('basicAuth')??"";
+
+  final response = await http.delete(
+    Uri.parse(url),
+    headers: {
+      "content-type": "application/json;charset=utf-8",
+      // 'authorization': basicAuth
+    },
+  );
+  try {
+    if (response.statusCode == 200) {
+      dynamic responseBody;
+      try {
+        responseBody = jsonDecode(response.body);
+        if (responseBody.runtimeType.toString() != "List<dynamic>") {
+          log("Its a Map Data");
+          if (responseBody.containsKey("status")) {
+            log(response.body);
+            return jsonDecode(response.body);
+          } else {
+            return null;
+          }
+        }
+        else  if (responseBody.containsKey("error")) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('authToken', "");
+          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyApp()));
+          return null;
+        }
+        else {
+          log("Its a List");
+          return null;
+        }
+      } catch (e) {
+        log(e.toString());
+        return {};
+      }
+    } else {
+      log("++++++++++Status Code +++++++++++++++");
+      log(response.statusCode.toString());
+      return null;
+    }
+  }
+  catch(e){
+    return null;
+  }
+
+}
+
+
 
 logOutApi({dynamic response, context, exception}) async {
   if (response.containsKey("error")) {

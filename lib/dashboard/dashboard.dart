@@ -1,5 +1,7 @@
 
 
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timesheet_management/dashboard/dashboard_charts.dart';
@@ -91,188 +93,161 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 30,),
-              const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Text("Dashboard",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+               Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text( window.sessionStorage["userType"]=="Manager" ?"Project Expenses" :"Project Details",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
               ),
-              const SizedBox(height: 12,),
-              Row(
-                children:  [
-                  Expanded(child: InkWell(
-
-                    onTap: (){
-
-                    },
-                    child:  const KpiCard(title: "Total WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
-
-                  )),
-                  const SizedBox(width: 40),
-                  Expanded(child: InkWell(
-                    //mouseCursor: MouseCursor.,
-                      customBorder: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      onTap: (){
-
-                      },
-                      child:  const KpiCard(title: "IN-Progress WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
-
-                  )),
-                  const SizedBox(width: 40),
-                  Expanded(child: InkWell(
-                    //mouseCursor: MouseCursor.,
-                    customBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    onTap: (){
-
-                    },
-                    child:  const KpiCard(title: "Completed WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
-
-                  )),
-                  const SizedBox(width: 40),
-                  Expanded(child: InkWell(
-                    //mouseCursor: MouseCursor.,
-                    customBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    onTap: (){
-
-                    },
-                    child:  const KpiCard(title: "Over Due WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
-
-                  )),
-                  const SizedBox(width: 40),
-
-                ],
-              ),
+              // const SizedBox(height: 12,),
+              // Row(
+              //   children:  [
+              //     Expanded(child: InkWell(
+              //
+              //       onTap: (){
+              //
+              //       },
+              //       child:  const KpiCard(title: "Total WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
+              //
+              //     )),
+              //     const SizedBox(width: 40),
+              //     Expanded(child: InkWell(
+              //       //mouseCursor: MouseCursor.,
+              //         customBorder: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(10),
+              //         ),
+              //         onTap: (){
+              //
+              //         },
+              //         child:  const KpiCard(title: "IN-Progress WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
+              //
+              //     )),
+              //     const SizedBox(width: 40),
+              //     Expanded(child: InkWell(
+              //       //mouseCursor: MouseCursor.,
+              //       customBorder: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10),
+              //       ),
+              //       onTap: (){
+              //
+              //       },
+              //       child:  const KpiCard(title: "Completed WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
+              //
+              //     )),
+              //     const SizedBox(width: 40),
+              //     Expanded(child: InkWell(
+              //       //mouseCursor: MouseCursor.,
+              //       customBorder: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10),
+              //       ),
+              //       onTap: (){
+              //
+              //       },
+              //       child:  const KpiCard(title: "Over Due WBS",subTitle:'300',subTitle2: "134",icon:Icons.account_balance_wallet_outlined),
+              //
+              //     )),
+              //     const SizedBox(width: 40),
+              //
+              //   ],
+              // ),
               const SizedBox(height: 20,),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround,crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 3,
                     child: Column(
                       children: [
-                        Card(elevation: 8,
+                        Card(elevation: 0,
                           child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                            height: 400,
+
                             child:
-                            const Column(crossAxisAlignment: CrossAxisAlignment.start,
+                             Column(crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(height: 14,),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 18.0,bottom: 8),
-                                  child: Text("Work Activity"),
-                                ),
-                                SizedBox(height: 350,child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: BarChartData(),
+                                const SizedBox(height: 14,),
+
+                                SizedBox(child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child:window.sessionStorage["userType"]=="Manager" ? const ManagerView() : const EmployeeView(),
                                 )),
                               ],
                             ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Card(
-                                elevation: 8,
-                                child: Container(
-                                  height: 400,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                                  child:  const Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 14,),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 18.0),
-                                        child: Text("WBS Priority"),
-                                      ),
-                                      SizedBox(height: 20,),
-                                      SizedBox(
-                                        height: 300,
-                                        child: WbsPriorityChart(),
-
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Card(elevation: 8,
-                                child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                                  height: 400,
-                                  child:
-                                  const Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 14,),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 18.0),
-                                        child: Text("WBS Progress"),
-                                      ),
-                                      SizedBox(height: 350,child: PirChartData()),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //       child: Card(
+                        //         elevation: 8,
+                        //         child: Container(
+                        //           height: 400,
+                        //           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
+                        //           child:  const Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        //             children: [
+                        //               SizedBox(height: 14,),
+                        //               Padding(
+                        //                 padding: EdgeInsets.only(left: 18.0),
+                        //                 child: Text("WBS Priority"),
+                        //               ),
+                        //               SizedBox(height: 20,),
+                        //               SizedBox(
+                        //                 height: 300,
+                        //                 child: WbsPriorityChart(),
+                        //
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Expanded(
+                        //       child: Card(elevation: 8,
+                        //         child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
+                        //           height: 400,
+                        //           child:
+                        //           const Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        //             children: [
+                        //               SizedBox(height: 14,),
+                        //               Padding(
+                        //                 padding: EdgeInsets.only(left: 18.0),
+                        //                 child: Text("WBS Progress"),
+                        //               ),
+                        //               SizedBox(height: 350,child: PirChartData()),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 20,),
-                  // Expanded(
-                  //   child: Card(
-                  //     elevation: 8,
-                  //     child: Container(
-                  //       height: 400,
-                  //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                  //       child:  const Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(width: 40,),
+                  // Expanded(flex: 2,
+                  //   child: Card(elevation: 8,
+                  //     child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
+                  //       height: 800,
+                  //       child:   const Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
                   //         children: [
                   //           SizedBox(height: 14,),
                   //           Padding(
                   //             padding: EdgeInsets.only(left: 18.0),
-                  //             child: Text("Pie Chart"),
+                  //             child: Text("Recent WBS",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold)),
                   //           ),
-                  //           SizedBox(height: 20,),
-                  //           SizedBox(
-                  //               height: 300,
-                  //               child: PirChartData()
+                  //           SizedBox(height: 14,),
+                  //           Expanded(
+                  //             child: SingleChildScrollView(
+                  //               child: Column(
+                  //                 children: [
+                  //                   RecentWBS(),
+                  //                 ],
+                  //               ),
+                  //             ),
                   //           ),
                   //         ],
                   //       ),
                   //     ),
                   //   ),
                   // ),
-                  const SizedBox(width: 20,),
-                  Expanded(flex: 2,
-                    child: Card(elevation: 8,
-                      child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                        height: 800,
-                        child:   const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 14,),
-                            Padding(
-                              padding: EdgeInsets.only(left: 18.0),
-                              child: Text("Recent WBS",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold)),
-                            ),
-                            SizedBox(height: 14,),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    RecentWBS(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
 
                 ],
               ),
@@ -284,195 +259,1370 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
 
 
+class EmployeeView extends StatefulWidget {
+  const EmployeeView({super.key});
+
+  @override
+  State<EmployeeView> createState() => _EmployeeViewState();
+}
+
+class _EmployeeViewState extends State<EmployeeView> {
+
+  @override
+  Widget build(BuildContext context) {
+    return   Column(
+      children: [
+        Card(elevation: 10,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+
+                          Text("Project1",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text("WBS : "),
+                          Text("5",style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text("Total Hr's Spent :"),
+                          Text(" 40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 100,)
+
+                  ],
+                ),
+                const SizedBox(height: 5,),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("WBS List",style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+
+                            Text("WBS Project_1"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("Completed",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("Hrs :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("20:00",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            // const Text("WBS Members :"),
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil',];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+
+                            Text("WBS Project_1B"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("Completed",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("Hrs :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("20:00",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Suresh',"Akhil"];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("WBS Project2"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("ETA :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("12-Apr-2025",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            // const Text("WBS Members :"),
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil', 'Kiran',"Tejes"];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("WBS Project E2"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("Yet to Start",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("ETA :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("09-Apr-2025",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            // const Text("WBS Members :"),
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil',];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("WBS Project E2"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("Yet to Start",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("ETA :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("03-Apr-2025",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil',];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                const SizedBox(height: 15,),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 30,),
+        Card(elevation: 10,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+
+                          Text("Project 2",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text("WBS : "),
+                          Text("2",style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text("Total Hr's Spent :"),
+                          Text("40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 100,)
+
+
+                  ],
+                ),
+                const SizedBox(height: 5,),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("WBS List",style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+
+                            Text("WBS Project_12"),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("Completed",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("Hrs :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("9:00",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            // const Text("WBS Members :"),
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil',];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("WBS Project2",),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row(
+                          children: [
+                            Text("Status :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding:  EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 200,
+                        child: Row (
+                          children: [
+                            Text("ETA :"),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0,right: 8),
+                              child: Text("12-Apr-2025",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SizedBox(width: 250,
+                        child: Row(
+                          children: [
+                            // const Text("WBS Members :"),
+                            Builder(
+                                builder: (context) {
+                                  var displayListItems =[ 'Akhil', 'Kiran',"Tejes"];
+                                  return SizedBox(
+                                    height: 25,width: 100, // Set fixed height
+                                    child: Stack(
+                                      children: displayListItems.asMap().entries.map<Widget>((entry) {
+                                        int i = entry.key;
+                                        String member = entry.value;
+                                        return Positioned(
+                                          left: i * 16.0,
+                                          child: Tooltip(
+                                            message: member,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                              child: Text(
+                                                member[0],
+                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                const SizedBox(height: 15,),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 30,),
+      ],
+    );
+  }
+}
+
+class ManagerView extends StatefulWidget {
+  const ManagerView({super.key});
+
+  @override
+  State<ManagerView> createState() => _ManagerViewState();
+}
+
+class _ManagerViewState extends State<ManagerView> {
+  @override
+  Widget build(BuildContext context) {
+    return   Column(
+      children: [
+        InkWell(
+          onTap: (){},
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(elevation: 10,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Project : "),
+                                Text("6D - Project1",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Budget :"),
+                                Text("1 Cr",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Avl Budget :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                    child: Text("90 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Total Hr's Spent :"),
+                                Text(" 40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Total Employees : "),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Total WBS :"),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Status :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20,),
+        InkWell(
+            onTap: (){},
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Card(elevation: 10,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Project : "),
+                                Text("6D - Project Site",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Budget :"),
+                                Text("50 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Avl Budget :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("10 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Total Hr's Spent :"),
+                                Text(" 100 :00",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Total Employees : "),
+                                Text("7",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Total WBS :"),
+                                Text("19",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Status :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Due Date :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("12-Apr-2025",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+            ),
+          ),
+        const SizedBox(height:20,),
+        InkWell(
+          onTap: (){},
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(elevation: 10,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Project : "),
+                                Text("6D - Project_3",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Budget :"),
+                                Text("1 Cr",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Avl Budget :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("90 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Total Hr's Spent :"),
+                                Text(" 40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Total Employees : "),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Total WBS :"),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Status :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20,),
+        InkWell(
+          onTap: (){},
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(elevation: 10,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Project : "),
+                                Text("6D - Project_4",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Budget :"),
+                                Text("1 Cr",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Avl Budget :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("90 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Total Hr's Spent :"),
+                                Text(" 40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Total Employees : "),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Total WBS :"),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Status :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20,),
+        InkWell(
+          onTap: (){},
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(elevation: 10,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Project : "),
+                                Text("6D - Project_7",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Budget :"),
+                                Text("1 Cr",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Avl Budget :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("90 L",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+                                Text("Total Hr's Spent :"),
+                                Text(" 40:00",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                          child: SizedBox(width: 260,
+                            child: Row(
+                              children: [
+                                Text("Total Employees : "),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 150,
+                            child: Row(
+                              children: [
+                                Text("Total WBS :"),
+                                Text("12",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row(
+                              children: [
+                                Text("Status :"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0,right: 8),
+                                  child: Text("In-Progress",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:  EdgeInsets.only(left: 3.0),
+                          child: SizedBox(width: 200,
+                            child: Row (
+                              children: [
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20,),
+
+      ],
+    );
+  }
 }
 
 
 
 
-// class BarChartData extends StatefulWidget {
-//   const BarChartData({Key? key}) : super(key: key);
-//
-//   @override
-//   State<BarChartData> createState() => _BarChartDataState();
-// }
-//
-// class _BarChartDataState extends State<BarChartData> {
-//   late TooltipBehavior _tooltipBehavior;
-//
-//
-//   @override
-//   void initState() {
-//     _tooltipBehavior = TooltipBehavior(enable: true,animationDuration: 1);
-//     super.initState();
-//   }
-//   final List<ChartData> chartData = [
-//     ChartData('Jan', 25, const Color.fromRGBO(9,0,136,1)),
-//     ChartData('Feb', 38, const Color.fromRGBO(147,0,119,1)),
-//     ChartData('Mar', 34, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('April', 34, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('May', 23, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('Jun', 33, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('Others', 52, const Color.fromRGBO(255,189,57,1))
-//   ];
-//
-//   final List<ChartData> chartData2 = [
-//     ChartData('Jan', 60, const Color.fromRGBO(9,0,136,1)),
-//     ChartData('Feb', 32, const Color.fromRGBO(147,0,119,1)),
-//     ChartData('Mar', 41, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('April', 31, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('May', 41, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('Jun', 51, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('Others', 22, const Color.fromRGBO(255,189,57,1))
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return  SfCartesianChart(
-//       tooltipBehavior: _tooltipBehavior,
-//       isTransposed: true,
-//       primaryXAxis: CategoryAxis(),
-//       series: <ChartSeries>[
-//         BarSeries<ChartData, String>(color: const Color(0xff747AF2),
-//           dataSource: chartData,
-//           xValueMapper: (ChartData data, _) => data.x,
-//           yValueMapper: (ChartData data, _) => data.y,
-//         ),
-//         BarSeries<ChartData, String>(
-//           color:  const Color(0xffEF376E),
-//           dataSource: chartData2,
-//           xValueMapper: (ChartData data, _) => data.x,
-//           yValueMapper: (ChartData data, _) => data.y,
-//         ),
-//       ],
-//     );
-//   }
-// }
-//
-//
-// class ChartData {
-//   ChartData(this.x, this.y, this.color);
-//   final String x;
-//   final double y;
-//   final Color color;
-// }
-//
-// class _SalesData {
-//   _SalesData(this.year, this.sales);
-//
-//   final String year;
-//   final double sales;
-// }
-//
-//
-// class LineChartData extends StatefulWidget {
-//   const LineChartData({Key? key}) : super(key: key);
-//
-//   @override
-//   State<LineChartData> createState() => _LineChartDataState();
-// }
-//
-// class _LineChartDataState extends State<LineChartData> {
-//
-//   List<_SalesData> data = [
-//     _SalesData('Jan', 35),
-//     _SalesData('Feb', 18),
-//     _SalesData('Mar', 32),
-//     _SalesData('Apr', 32),
-//     _SalesData('May', 40),
-//     _SalesData('Jun', 29)
-//   ];
-//
-//   List<_SalesData> data2 = [
-//     _SalesData('Jan', 30),
-//     _SalesData('Feb', 8),
-//     _SalesData('Mar', 34),
-//     _SalesData('Apr', 42),
-//     _SalesData('May', 45),
-//     _SalesData('Jun', 39)
-//   ];
-//   @override
-//   Widget build(BuildContext context) {
-//     return SfCartesianChart(
-//         primaryXAxis: CategoryAxis(),
-//
-//         // Chart title
-//
-//         // Enable legend
-//
-//         // Enable tooltip
-//         tooltipBehavior: TooltipBehavior(enable: true),
-//         series: <ChartSeries<_SalesData, String>>[
-//           LineSeries<_SalesData, String>(
-//               dataSource: data,
-//               xValueMapper: (_SalesData sales, _) => sales.year,
-//               yValueMapper: (_SalesData sales, _) => sales.sales,
-//               name: 'Sales',
-//               // Enable data label
-//               dataLabelSettings: const DataLabelSettings(isVisible: true)),
-//           LineSeries<_SalesData, String>(
-//               dataSource: data2,
-//               xValueMapper: (_SalesData sales, _) => sales.year,
-//               yValueMapper: (_SalesData sales, _) => sales.sales,
-//               name: 'Sales 2',
-//               // Enable data label
-//               dataLabelSettings: const DataLabelSettings(isVisible: true))
-//         ]
-//     );
-//   }
-// }
-//
-//
-//
-// class PirChartData extends StatefulWidget {
-//   const PirChartData({Key? key}) : super(key: key);
-//
-//   @override
-//   State<PirChartData> createState() => _PirChartDataState();
-// }
-//
-// class _PirChartDataState extends State<PirChartData> {
-//
-//   late TooltipBehavior _tooltipBehavior;
-//
-//   final List<ChartData> chartData = [
-//     ChartData('David', 25,  const Color.fromRGBO(0,37, 150, 190)),
-//     ChartData('Steve', 38, const Color.fromRGBO(147,0,119,1)),
-//     ChartData('Jack', 34, const Color.fromRGBO(228,0,124,1)),
-//     ChartData('Others', 52, const Color.fromRGBO(255,189,57,1))
-//   ];
-//
-//   @override
-//   void initState() {
-//
-//     _tooltipBehavior = TooltipBehavior(enable: true,animationDuration:1 );
-//     super.initState();
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return SfCircularChart(
-//       legend: Legend(isVisible: true, overflowMode: LegendItemOverflowMode.scroll),
-//       tooltipBehavior: _tooltipBehavior,
-//       series: <CircularSeries>[
-//         DoughnutSeries<ChartData, String>(
-//             enableTooltip: true,
-//             dataSource: chartData,
-//             pointColorMapper:(ChartData data,  _) => data.color,
-//             xValueMapper: (ChartData data, _) => data.x,
-//             yValueMapper: (ChartData data, _) => data.y,
-//             dataLabelSettings: DataLabelSettings(isVisible: true,
-//               builder: (data, point, series, pointIndex, seriesIndex) {
-//                 return Text("${data.x}",style: const TextStyle(color: Colors.white,fontSize: 12),);
-//               },
-//             )
-//         ),
-//
-//
-//       ],
-//     );
-//   }
-// }
+
+
 
 
 

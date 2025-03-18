@@ -27,8 +27,8 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
 
   List projectData =[
     {"projectName":"Proj123","projectID":"23342"},
-    {"projectName":"Pro300","projectID":"11232"},
-    {"projectName":"Pro3001","projectID":"00232"}
+    {"projectName":"Project_1","projectID":"11232"},
+    {"projectName":"M1_Singapore_BSS & Magik_Sep22","projectID":"00232"}
   ];
 
   List weekDays =[];
@@ -133,7 +133,6 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
       ),);
 
     }
-
     List responseData = await getTimeSheet(fromDate: getDate(weekDays.first),toDate:getDate(weekDays.last));
     for(int i=0;i<responseData.length;i++){
       DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(responseData[i]['date']);
@@ -144,7 +143,7 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
       List<SubRow> subList =[];
       for(int j =0;j<responseData[i]['timeSheet'].length;j++){
         subList.add(
-          SubRow(responseData[i]['timeSheet'][j]['timesheet_id'],responseData[i]['timeSheet'][j]['project_id'], responseData[i]['timeSheet'][j]['project_name'], responseData[i]['timeSheet'][j]['wbs'], responseData[i]['timeSheet'][j]['daily_log'], responseData[i]['timeSheet'][j]['status']),
+          SubRow(responseData[i]['timeSheet'][j]['timesheet_id'],responseData[i]['timeSheet'][j]['project_name'], responseData[i]['timeSheet'][j]['project_id'], responseData[i]['timeSheet'][j]['wbs'], responseData[i]['timeSheet'][j]['daily_log'], responseData[i]['timeSheet'][j]['status']),
         );
       }
       for(int k=0;k<employees.length;k++ ) {
@@ -174,7 +173,7 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
   getTimeSheet({required fromDate, required toDate}) async {
 
     String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_userId_logDate/USER123/$fromDate/$toDate";
-
+    print(url);
     List tempData = await  getData(context: context,url: url);
     // Group by date
     Map groupedByDate = {};
@@ -334,26 +333,37 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                       headingRowColor: MaterialStateProperty.all(Colors.blue[50]),
 
                       columns: [
-                         DataColumn(label: SizedBox(width: 100, child:  Padding(
+                        DataColumn(label: SizedBox(width: 250, child:  Padding(
                             padding: const EdgeInsets.only(right: 0.0),
-                            child: ElevatedButton(
-                              onPressed: () {
+                            child: Row(
+                              children: [
+                                SizedBox(width: 100,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if(employee.subRows.last.timeSheetId!="" && employee.subRows.last.wbs!="")
+                                      {
+                                        employee.subRows.add( SubRow("","", "", "","",""),);
+                                        setState(() {
 
-                                employee.subRows.add( SubRow("","", "", "","",""),);
-                                setState(() {
+                                        });
+                                      }
+                                      else{
 
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      elevation: 4,
+                                    ),
+
+                                    child: const Text('Add', style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  ),
                                 ),
-                                elevation: 4,
-                              ),
-
-                              child: const Text('Add', style: TextStyle(color: Colors.white, fontSize: 16)),
+                              ],
                             )
 
 
@@ -384,13 +394,13 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                               label: Container(
                                 alignment: Alignment.topCenter,
                                 color: Colors.lightBlueAccent[50],
-                                width: 100,height: 24,
+                                width: 250,height: 24,
                                 child: LayoutBuilder(
                                   builder: (BuildContext context,
                                       BoxConstraints constraints) {
                                     return CustomPopupMenuButton(
                                       elevation: 4,
-                                      decoration: customPopupDecoration(hintText: sub.projectID,),
+                                      decoration: customPopupDecoration(hintText: sub.projectName,),
                                       itemBuilder: (
                                           BuildContext context) {
                                         return projectData.map((value) {
@@ -404,8 +414,8 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                       onSelected: (value) {
                                         value as Map;
                                         setState(() {
-                                          employee.subRows[index].projectID=value['projectID'].toString();
-                                          employee.subRows[index].task=value['projectName'].toString();
+                                          employee.subRows[index].projectName=value['projectName'].toString();
+                                          employee.subRows[index].projectId=value['projectID'].toString();
                                         });
                                       },
                                       onCanceled: () {
@@ -419,7 +429,7 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                 ),
                               ),
                             ),
-                            DataColumn(label: SizedBox(width: 100, child: Text(sub.task))),
+                            DataColumn(label: SizedBox(width: 100, child: Text(sub.projectId))),
                             DataColumn(
                               label: Container(
                                 alignment: Alignment.topCenter,
@@ -442,7 +452,6 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                         }).toList();
                                       },
                                       onSelected: (value) {
-
                                         setState(() {
                                           employee.subRows[index].wbs=value.toString();
                                         });
@@ -458,44 +467,43 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                 ),
                               ),
                             ),
-
                             DataColumn(
                                 label: SizedBox(height: 30,
-                                    width: 100, child: TextField(
-                                  controller: timeController,
-                                  keyboardType: TextInputType.number,style: const TextStyle(fontSize: 14),
-                                  onChanged: (v){
-                                    sub.logHrs=v;
-                                    employee.logHrs=employee.calculateTotalLogHrs();
-                                    widget.onTotalHoursUpdated(employee.calculateTotalHeaderHours(employees));
-                                    setState(() {
+                                  width: 100, child: TextField(
+                                    controller: timeController,
+                                    keyboardType: TextInputType.number,style: const TextStyle(fontSize: 14),
+                                    onChanged: (v){
+                                      sub.logHrs=v;
+                                      employee.logHrs=employee.calculateTotalLogHrs();
+                                      widget.onTotalHoursUpdated(employee.calculateTotalHeaderHours(employees));
+                                      setState(() {
 
 
-                                    });
-                                  },
-                                  inputFormatters: [
+                                      });
+                                    },
+                                    inputFormatters: [
 
-                                    LengthLimitingTextInputFormatter(5), // Limit to 4 digits
-                                    TimeInputFormatter(),
-                                  ],
-                                  decoration: const InputDecoration(
-                                    // labelText: "Work Hours (HH:mm)",
-                                    hintText: "00:00",contentPadding:  EdgeInsets.fromLTRB(0, 0, 0, 15),
-                                    border: InputBorder.none,
-                                  ),
-                                ),)),
+                                      LengthLimitingTextInputFormatter(5), // Limit to 4 digits
+                                      TimeInputFormatter(),
+                                    ],
+                                    decoration: const InputDecoration(
+                                      // labelText: "Work Hours (HH:mm)",
+                                      hintText: "00:00",contentPadding:  EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),)),
                             DataColumn(
                               label: SizedBox(width: 100,
                                 child:
-                                window.sessionStorage["userType"]=="Approver" && (sub.status=="Pending") ? Row(
+                                window.sessionStorage["userType"]=="Manager" && (sub.status=="Pending") ? Row(
                                   children: [
                                     Tooltip(message: "Approve",child: SizedBox(width: 30,child:  Center(child: InkWell(child: const Icon(Icons.check_circle_sharp,color: Colors.green),onTap: (){
-                                      _showConfirmationDialog(context, "Approve", "Are you sure you want to approve?");
+                                      _showConfirmationDialog(context, "Approve", "Are you sure you want to approve?",sub);
 
                                     })),)),
                                     const SizedBox(width: 20),
                                     Tooltip(message: "Reject",child: SizedBox(width: 20,child:  Center(child: InkWell(child: const Icon(Icons.cancel_outlined,color: Colors.red),onTap: (){
-                                      _showConfirmationDialog(context, "Reject", "Are you sure you want to reject?");
+                                      _showConfirmationDialog(context, "Reject", "Are you sure you want to reject?",sub);
 
                                     })),)),
                                   ],
@@ -503,12 +511,12 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                 sub.status==""? Padding(
                                     padding: const EdgeInsets.only(right: 0.0),
                                     child: ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         Map tempJson =  {
                                           "daily_log":sub.logHrs,
                                           "log_date": getDate(employee.date),
-                                          "project_id":  sub.projectID,
-                                          "project_name": sub.projectID,
+                                          "project_id":  sub.projectId,
+                                          "project_name": sub.projectName,
                                           "status": "pending",
                                           "user_id": "USER123",
                                           "wbs": sub.wbs,
@@ -518,7 +526,10 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                         List tempList =[];
                                         tempList.add(tempJson);
 
-                                        // postTimeSheet(tempList);
+                                        await postTimeSheet(tempList);
+                                        var dateNow = DateTime.now();
+                                        String date= "${dateNow.day}-${dateNow.month}-${dateNow.year}";
+                                        await getInitialData();
 
                                         setState(() {
 
@@ -545,25 +556,27 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                               ),
                             )
                           ]:[
-                            DataColumn(label: SizedBox(width: 100, child: Text(sub.projectID))),
-                            DataColumn(label: SizedBox(width: 100, child: Text(sub.task))),
+                            DataColumn(label: SizedBox(width: 100, child: Text(sub.timeSheetId))),
+                            DataColumn(label: SizedBox(width: 100, child: Text(sub.projectId))),
                             DataColumn(label: SizedBox(width: 100, child: Text(sub.wbs))),
                             DataColumn(label: SizedBox(width: 100, child: Text(sub.logHrs))),
                             DataColumn(label: SizedBox(width: 100,child: Text(sub.status,style: TextStyle(color: sub.status =="Completed"?Colors.green:sub.status =="Pending"?Colors.deepOrange:Colors.red),)
-                      )
-                      ),
+                            )
+                            ),
                           ],
                           rows: const [],
                         ),
-                        trailing: InkWell(
-                          onTap: () {
+                        trailing: sub.status !="Approved" ?InkWell(
+                          onTap: () async {
+                            // await deleteById (employee.subRows[index].timeSheetId);
                             setState(() {
-                              print(employee.subRows[index].id);
-                              // employee.subRows.removeAt(index); // Remove the row
+
+                              print(employee.subRows[index].timeSheetId);
+                              employee.subRows.removeAt(index); // Remove the row
                             });
                           },
                           child: const Icon(Icons.delete, color: Colors.red),
-                        ),
+                        ):SizedBox(),
                       );
                     }).toList(),
                   );
@@ -577,7 +590,8 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
     );
   }
 
-  void _showConfirmationDialog(BuildContext context, String action, String message) {
+  void _showConfirmationDialog(BuildContext context, String action, String message, SubRow sub, ) {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -632,6 +646,9 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("$action successful")),
                             );
+                            setState(() {
+                              sub.status ="Approved";
+                            });
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: action == "Approve" ? Colors.green : Colors.red,
@@ -690,11 +707,11 @@ class Employee {
   List<SubRow> subRows;
 
   Employee(
-    this.date,
-    this.logHrs,
-    this.status,
-    this.subRows,
-  );
+      this.date,
+      this.logHrs,
+      this.status,
+      this.subRows,
+      );
 
   String calculateTotalLogHrs() {
     int totalMinutes = subRows.fold(
@@ -703,42 +720,43 @@ class Employee {
   }
 
   int _convertToMinutes(String logHrs) {
-     try{
-       List<String> parts = logHrs.split(":");
-       int hours = int.parse(parts[0]);
-       int minutes = int.parse(parts[1]);
-       return (hours * 60) + minutes;
-     }
-     catch(e){
-       return 0;
-     }
-   }
+    try{
+      List<String> parts = logHrs.split(":");
+      int hours = int.parse(parts[0]);
+      int minutes = int.parse(parts[1]);
+      return (hours * 60) + minutes;
+    }
+    catch(e){
+      return 0;
+    }
+  }
 
-   String _convertToHoursMinutes(int totalMinutes) {
-     int hours = totalMinutes ~/ 60;
-     int minutes = totalMinutes % 60;
-     return "$hours:${minutes.toString().padLeft(2, '0')}";
-   }
+  String _convertToHoursMinutes(int totalMinutes) {
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+    return "$hours:${minutes.toString().padLeft(2, '0')}";
+  }
 
-   String calculateTotalHeaderHours(List<Employee> employees) {
-     try{
-       int totalMinutes = employees.fold(0, (sum, emp) => sum + _convertToMinutes(emp.logHrs));
-       return _convertToHoursMinutes(totalMinutes);
-     }
-     catch(e){
-       return "";
-     }
-   }
+  String calculateTotalHeaderHours(List<Employee> employees) {
+    try{
+      int totalMinutes = employees.fold(0, (sum, emp) => sum + _convertToMinutes(emp.logHrs));
+      return _convertToHoursMinutes(totalMinutes);
+    }
+    catch(e){
+
+      return "0";
+    }
+  }
 }
 
 class SubRow {
-  String id;
-  String projectID;
-  String task;
+  String timeSheetId;
+  String projectName;
+  String projectId;
   String wbs;
   String logHrs;
   String status;
-  SubRow(this.id,this.projectID,this.task,this.wbs, this.logHrs,this.status);
+  SubRow(this.timeSheetId,this.projectName,this.projectId,this.wbs, this.logHrs,this.status);
 }
 
 

@@ -46,6 +46,7 @@ import '../../main.dart';
 // then throw an exception.
     log("++++++++++Status Code +++++++++++++++");
     log(response.statusCode.toString());
+    return [];
   }
 }
 

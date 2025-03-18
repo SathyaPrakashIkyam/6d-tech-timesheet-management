@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:timesheet_management/dashboard/dashboard.dart';
+import 'package:timesheet_management/utils/api/post_api.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -193,10 +194,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: ElevatedButton(
-                              onPressed: () {
-                                window.sessionStorage["login"] = "success";
-                                window.sessionStorage["userType"] = emailController.text;
-                                Navigator.pushNamed(context, "/dashboard");
+                              onPressed: () async {
+                                print(emailController.text);
+                                print(passwordController.text);
+                                Map json ={
+                                  "user_name":emailController.text,
+                                  "password":passwordController.text
+                                };
+                                await checkLoginDetails(requestBody:json);
+
 
                                 // _handleLogin();
                               },
@@ -231,5 +237,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  checkLoginDetails({required  requestBody}) async {
+    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/login-authenticate";
+    var data =await postData(url: url,requestBody: requestBody,context: context);
+    if(data!=null){
+      print(data);
+      window.sessionStorage["login"] = "success";
+      window.sessionStorage["userType"] = data['role'];
+      Navigator.pushNamed(context, "/dashboard");
+    }
+
   }
 }

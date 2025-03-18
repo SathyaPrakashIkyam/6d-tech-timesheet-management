@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
@@ -8,6 +10,8 @@ import 'package:timesheet_management/utils/customAppBar.dart';
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 
 import '../utils/customDrawer.dart';
+import '../utils/custom_popup_dropdown/custom_popup_dropdown.dart';
+import '../utils/static_data/motows_colors.dart';
 import 'monthly_table.dart';
 
 class ListTimesheet extends StatefulWidget {
@@ -25,6 +29,7 @@ class _ListTimesheetState extends State<ListTimesheet> {
   List<bool> isSelected = [true, false, false];
 
   String totalHours = "8:00"; // Default value
+  String selectedUser = "User 1"; // Default value
   TextEditingController totalHr = TextEditingController(text: "00:00");
   List weekDays =[];
   List monthDays =[];
@@ -100,7 +105,49 @@ class _ListTimesheetState extends State<ListTimesheet> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children:   [
-                                              const Text("Timesheet", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
+                                              Row(
+                                                children: [
+                                                  const Text("Timesheet", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  SizedBox(width: 15,),
+                                                  if(window.sessionStorage["userType"]=="Manager")
+                                                  Container(
+                                                    alignment: Alignment.topCenter,
+                                                    color: Colors.lightBlueAccent[50],
+                                                    width: 100,height: 24,
+                                                    child: LayoutBuilder(
+                                                      builder: (BuildContext context,
+                                                          BoxConstraints constraints) {
+                                                        return CustomPopupMenuButton(
+                                                          elevation: 4,
+                                                          decoration: customPopupDecoration(hintText: selectedUser,),
+                                                          itemBuilder: (
+                                                              BuildContext context) {
+                                                            return ["User1","User2"].map((value) {
+                                                              return CustomPopupMenuItem(
+                                                                  value: value,
+                                                                  text: value,
+                                                                  child: Container()
+                                                              );
+                                                            }).toList();
+                                                          },
+                                                          onSelected: (value) {
+                                                            selectedUser =value;
+                                                            setState(() {
+
+                                                            });
+                                                          },
+                                                          onCanceled: () {
+
+                                                          },
+                                                          hintText: "",
+                                                          childWidth: constraints.maxWidth,
+                                                          child: Container(),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                               SizedBox(height: 40,
                                                 child: ToggleButtons(
@@ -338,6 +385,21 @@ class _ListTimesheetState extends State<ListTimesheet> {
       days.add(DateFormat('dd-MM-yyyy').format(date));
     }
     return days;
+  }
+
+  static customPopupDecoration({required String hintText}) {
+    return InputDecoration(
+      hoverColor: mHoverColor,
+      disabledBorder:  InputBorder.none,
+      suffixIcon: const Icon(Icons.arrow_drop_down_circle_sharp, color: mSaveButton, size: 14),
+      border:  InputBorder.none,
+      constraints: const BoxConstraints(maxHeight: 30),
+      hintText: hintText=="" ?"Select":hintText ,
+      hintStyle:  TextStyle(fontSize:hintText!='Select'?18: 18, color:hintText!='Select'? Colors.black:Colors.black54),
+      counterText: '',
+      contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 12),
+
+    );
   }
 
 

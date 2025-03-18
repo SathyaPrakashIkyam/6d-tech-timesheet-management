@@ -1,4 +1,6 @@
 
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timesheet_management/utils/static_data/motows_colors.dart';
@@ -24,7 +26,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late double _selectedDestination;
   String userRole = "";
   List<bool> sideBarList = [false, false, false, false];
+
+
   getInitialData() async{
+    print(window.sessionStorage["userType"]=="Admin" );
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? sidebarString = prefs.getString('sideBar');
     // if (sidebarString != null) {
@@ -83,7 +88,84 @@ class _CustomDrawerState extends State<CustomDrawer> {
             width: drawerWidth,
             child: Scaffold(
               //  backgroundColor: Colors.white,
-              body: Drawer(
+              body:window.sessionStorage["userType"]=="Admin"  ? Drawer(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xff0D47A1), Colors.lightBlueAccent,], // Define gradient colors
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: ListView(
+                    controller: ScrollController(),
+                    shrinkWrap: true,
+                    // Important: Remove any padding from the ListView.
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+
+                      const SizedBox(height: 10,),
+                      /// User Management
+                      drawerWidth==60?
+                      InkWell(
+                        hoverColor: mHoverColor,
+                        onTap: (){
+                          setState(() {
+                            drawerWidth = 200;
+                          });
+                        },
+                        child: SizedBox(height: 40,
+                          child: Icon(Icons.supervised_user_circle_sharp,
+                            color: _selectedDestination == 4 ? Colors.black: Colors.white,),
+                        ),
+                      ):
+                      MouseRegion(
+                        onHover: (event){
+                          setState((){
+                            homeHovered=true;
+                          });
+                        },
+                        onExit: (event){
+                          setState(() {
+                            homeHovered=false;
+                          });
+
+                        },
+                        child: Padding(
+                          padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
+                          child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
+
+                            child: ListTileTheme(
+                              contentPadding: const EdgeInsets.only(left: 0),
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                },
+                                leading:  SizedBox(width: 40,child: Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.supervised_user_circle_sharp,color: _selectedDestination==4? Colors.black:Colors.white),
+                                ),),
+                                title:    Padding(
+                                  padding: const EdgeInsets.only(left: 8.0,right: 10),
+                                  child: Text(
+                                    drawerWidth == 60 ? '' : 'User Management',
+                                    style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
+
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+
+                    ],
+                  ),
+                ),
+              ): Drawer(
 
                 child: Container(
                   decoration: const BoxDecoration(
@@ -343,176 +425,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                         ),
                       ),
-
-                      /// User Management
-                      drawerWidth==60?
-                      InkWell(
-                        hoverColor: mHoverColor,
-                        onTap: (){
-                          setState(() {
-                            drawerWidth = 200;
-                          });
-                        },
-                        child: SizedBox(height: 40,
-                          child: Icon(Icons.supervised_user_circle_sharp,
-                            color: _selectedDestination == 4 ? Colors.black: Colors.white,),
-                        ),
-                      ):
-                      MouseRegion(
-                        onHover: (event){
-                          setState((){
-                            homeHovered=true;
-                          });
-                        },
-                        onExit: (event){
-                          setState(() {
-                            homeHovered=false;
-                          });
-
-                        },
-                        child: Padding(
-                          padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
-                          child: Container(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
-
-                            child: ListTileTheme(
-                              contentPadding: const EdgeInsets.only(left: 0),
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
-                                },
-                                leading:  SizedBox(width: 40,child: Padding(
-                                  padding: const EdgeInsets.only(left: 4.0),
-                                  child: Icon(Icons.supervised_user_circle_sharp,color: _selectedDestination==4? Colors.black:Colors.white),
-                                ),),
-                                title:    Padding(
-                                  padding: const EdgeInsets.only(left: 8.0,right: 10),
-                                  child: Text(
-                                    drawerWidth == 60 ? '' : 'User Management',
-                                    style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
-
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-
-                      /// Attendance
-                      // drawerWidth==60?
-                      // InkWell(
-                      //   hoverColor: mHoverColor,
-                      //   onTap: (){
-                      //     setState(() {
-                      //       drawerWidth = 200;
-                      //     });
-                      //   },
-                      //   child: SizedBox(height: 40,
-                      //     child: Icon(Icons.auto_graph_rounded,
-                      //       color: _selectedDestination == 4 ? Colors.black: Colors.white,),
-                      //   ),
-                      // ):
-                      // MouseRegion(
-                      //   onHover: (event){
-                      //     setState((){
-                      //       homeHovered=true;
-                      //     });
-                      //   },
-                      //   onExit: (event){
-                      //     setState(() {
-                      //       homeHovered=false;
-                      //     });
-                      //
-                      //   },
-                      //   child: Padding(
-                      //     padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
-                      //     child: Container(
-                      //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
-                      //
-                      //       child: ListTileTheme(
-                      //         contentPadding: const EdgeInsets.only(left: 0),
-                      //         child: ListTile(
-                      //           onTap: () {
-                      //             // Navigator.pushReplacementNamed(context, "/wbs");
-                      //           },
-                      //           leading:  SizedBox(width: 40,child: Padding(
-                      //             padding: const EdgeInsets.only(left: 4.0),
-                      //             child: Icon(Icons.auto_graph_rounded,color: _selectedDestination==4? Colors.black:Colors.white),
-                      //           ),),
-                      //           title:    Padding(
-                      //             padding: const EdgeInsets.only(left: 8.0,right: 10),
-                      //             child: Text(
-                      //               drawerWidth == 60 ? '' : 'Attendance',
-                      //               style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
-                      //
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-
-
-                      /// Report
-                      // drawerWidth==60?
-                      // InkWell(
-                      //   hoverColor: mHoverColor,
-                      //   onTap: (){
-                      //     setState(() {
-                      //       drawerWidth = 200;
-                      //     });
-                      //   },
-                      //   child: SizedBox(height: 40,
-                      //     child: Icon(Icons.add_chart_outlined,
-                      //       color: _selectedDestination == 5 ? Colors.black: Colors.white,),
-                      //   ),
-                      // ):
-                      // MouseRegion(
-                      //   onHover: (event){
-                      //     setState((){
-                      //       homeHovered=true;
-                      //     });
-                      //   },
-                      //   onExit: (event){
-                      //     setState(() {
-                      //       homeHovered=false;
-                      //     });
-                      //
-                      //   },
-                      //   child: Padding(
-                      //     padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
-                      //     child: Container(
-                      //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==5 ? Colors.white:Colors.transparent,),
-                      //
-                      //       child: ListTileTheme(
-                      //         contentPadding: const EdgeInsets.only(left: 0),
-                      //         child: ListTile(
-                      //           onTap: () {
-                      //             // Navigator.pushReplacementNamed(context, "/wbs");
-                      //           },
-                      //           leading:  SizedBox(width: 40,child: Padding(
-                      //             padding: const EdgeInsets.only(left: 4.0),
-                      //             child: Icon(Icons.add_chart_outlined,color: _selectedDestination==5? Colors.black:Colors.white),
-                      //           ),),
-                      //           title:    Padding(
-                      //             padding: const EdgeInsets.only(left: 8.0,right: 10),
-                      //             child: Text(
-                      //               drawerWidth == 60 ? '' : 'Reports',
-                      //               style:  TextStyle(fontSize: 17,color: _selectedDestination==5? Colors.black:Colors.white),
-                      //
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-
-
-
 
                     ],
                   ),

@@ -158,7 +158,7 @@ class CustomPopupMenuItemState<T, W extends CustomPopupMenuItem<T>> extends Stat
         alignment: AlignmentDirectional.centerStart,
         constraints: BoxConstraints(minHeight: widget.height),
         padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: _kMenuHorizontalPadding),
-        child:widget.text == null ?widget.child : Row(mainAxisAlignment: widget.textAlign ?? MainAxisAlignment.start,
+        child:widget.text == null ?widget.child : Wrap(
           children: [
             Text(widget.text??"",style: TextStyle(color: hoverValue? mSaveButton:Colors.black)),
           ],
