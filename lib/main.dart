@@ -9,6 +9,7 @@ import 'package:timesheet_management/project/project_view.dart';
 import 'package:timesheet_management/timesheet/list_timesheet.dart';
 import 'package:timesheet_management/timesheet/weekly_table.dart';
 import 'package:timesheet_management/user%20management/create_user.dart';
+import 'package:timesheet_management/user%20management/user_list.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import 'package:timesheet_management/wbs/list_wbs.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -76,6 +77,16 @@ class MyApp extends StatelessWidget {
               listTimesheetArguments = ListTimeSheetArguments(drawerWidth: 200, selectedDestination: 1);
             }
             newScreen =  ListTimesheet(args: listTimesheetArguments);
+          }
+          break;
+          case SixDRoutes.userList: {
+            UserListArguments userListArguments;
+            if(settings.arguments != null){
+              userListArguments = settings.arguments as UserListArguments;
+            } else {
+              userListArguments = UserListArguments(drawerWidth: 200, selectedDestination: 4);
+            }
+            newScreen = UserList(args: userListArguments);
           }
           break;
           case SixDRoutes.createUsers: {
