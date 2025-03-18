@@ -344,6 +344,61 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                       ),
 
+                      /// User Management
+                      drawerWidth==60?
+                      InkWell(
+                        hoverColor: mHoverColor,
+                        onTap: (){
+                          setState(() {
+                            drawerWidth = 200;
+                          });
+                        },
+                        child: SizedBox(height: 40,
+                          child: Icon(Icons.supervised_user_circle_sharp,
+                            color: _selectedDestination == 4 ? Colors.black: Colors.white,),
+                        ),
+                      ):
+                      MouseRegion(
+                        onHover: (event){
+                          setState((){
+                            homeHovered=true;
+                          });
+                        },
+                        onExit: (event){
+                          setState(() {
+                            homeHovered=false;
+                          });
+
+                        },
+                        child: Padding(
+                          padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
+                          child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
+
+                            child: ListTileTheme(
+                              contentPadding: const EdgeInsets.only(left: 0),
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                },
+                                leading:  SizedBox(width: 40,child: Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.supervised_user_circle_sharp,color: _selectedDestination==4? Colors.black:Colors.white),
+                                ),),
+                                title:    Padding(
+                                  padding: const EdgeInsets.only(left: 8.0,right: 10),
+                                  child: Text(
+                                    drawerWidth == 60 ? '' : 'User Management',
+                                    style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
+
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
 
                       /// Attendance
                       // drawerWidth==60?
@@ -843,6 +898,61 @@ class _AppBarDrawerState extends State<AppBarDrawer> {
                                   child: Text(
                                     drawerWidth == 60 ? '' : 'Time Sheet',
                                     style:  TextStyle(fontSize: 17,color: _selectedDestination==3? Colors.black:Colors.white),
+
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+                      drawerWidth==60?
+                      InkWell(
+                        hoverColor: mHoverColor,
+                        onTap: (){
+                          setState(() {
+                            drawerWidth = 200;
+                          });
+                        },
+                        child: SizedBox(height: 40,
+                          child: Icon(Icons.supervised_user_circle_sharp,
+                            color: _selectedDestination == 4 ? Colors.black: Colors.white,),
+                        ),
+                      ):
+                      MouseRegion(
+                        onHover: (event){
+                          setState((){
+                            homeHovered=true;
+                          });
+                        },
+                        onExit: (event){
+                          setState(() {
+                            homeHovered=false;
+                          });
+
+                        },
+                        child: Padding(
+                          padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
+                          child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
+
+                            child: ListTileTheme(
+                              contentPadding: const EdgeInsets.only(left: 0),
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                },
+                                leading:  SizedBox(width: 40,child: Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.supervised_user_circle_sharp,color: _selectedDestination==4? Colors.black:Colors.white),
+                                ),),
+                                title:    Padding(
+                                  padding: const EdgeInsets.only(left: 8.0,right: 10),
+                                  child: Text(
+                                    drawerWidth == 60 ? '' : 'User Management',
+                                    style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
 
                                   ),
                                 ),

@@ -8,6 +8,7 @@ import 'package:timesheet_management/project/list_projects.dart';
 import 'package:timesheet_management/project/project_view.dart';
 import 'package:timesheet_management/timesheet/list_timesheet.dart';
 import 'package:timesheet_management/timesheet/weekly_table.dart';
+import 'package:timesheet_management/user%20management/create_user.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import 'package:timesheet_management/wbs/list_wbs.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -76,6 +77,17 @@ class MyApp extends StatelessWidget {
             }
             newScreen =  ListTimesheet(args: listTimesheetArguments);
           }
+          break;
+          case SixDRoutes.createUsers: {
+            CreateUsersArguments createUsersArguments;
+            if(settings.arguments!=null) {
+              createUsersArguments = settings.arguments as CreateUsersArguments;
+            } else {
+              createUsersArguments = CreateUsersArguments(drawerWidth: 200, selectedDestination: 1);
+            }
+            newScreen =  CreateUsers(args: createUsersArguments);
+          }
+          break;
           default: newScreen = const InitialScreen();
         }
         return PageRouteBuilder(

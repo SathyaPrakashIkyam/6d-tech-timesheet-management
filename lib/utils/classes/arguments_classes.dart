@@ -22,3 +22,9 @@ class ListTimeSheetArguments {
   final double selectedDestination;
   ListTimeSheetArguments({required this.drawerWidth, required this.selectedDestination});
 }
+
+class CreateUsersArguments{
+  final double drawerWidth;
+  final double selectedDestination;
+  CreateUsersArguments({required this.drawerWidth, required this.selectedDestination});
+}
