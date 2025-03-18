@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timesheet_management/utils/api/get_api.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import 'package:timesheet_management/utils/customAppBar.dart';
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
@@ -15,46 +16,32 @@ class ListProjects extends StatefulWidget {
 
 class _ListProjectsState extends State<ListProjects> {
 
-  final List displayListItems = [
-    {
-      'id': '2444',
-      'name': 'Project 01',
-      'priority': 'High',
-      'priorityColor': Colors.green,
-      'status': 'Ongoing',
-      'statusColor': Colors.orange,
-      'startDate': '16/12/2024',
-      'dueDate': '16/12/2024',
-      'members': ['Assdf', 'A', 'A',"Sathya"]
-    },
-    {
-      'id': '2334',
-      'name': 'Project 02',
-      'priority': 'Low',
-      'priorityColor': Colors.red,
-      'status': 'Completed',
-      'statusColor': Colors.green,
-      'startDate': '18/12/2024',
-      'dueDate': '18/12/2024',
-      'members': ['G', 'S', ]
-    },
-    {
-      'id': '2414',
-      'name': 'Project 03',
-      'priority': 'Medium',
-      'priorityColor': Colors.orange,
-      'status': 'Yet to start',
-      'statusColor': Colors.red,
-      'startDate': '20/12/2024',
-      'dueDate': '20/12/2024',
-      'members': [ 'A', 'K',"Te"]
-    },
-
-  ];
+  List displayListItems = [];
 
 
   final _horizontalScrollController = ScrollController();
   final _verticalScrollController = ScrollController();
+
+  getProjectList() async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_projects";
+
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      displayListItems = response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch project list ----');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getProjectList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +162,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding: EdgeInsets.only(top: 4),
                                                         child: SizedBox(height: 25,
                                                             //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                            child: Text("Start Date")
+                                                            child: Text("Actual Date")
                                                         ),
                                                       )),
                                                   Expanded(
@@ -183,7 +170,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding: EdgeInsets.only(top: 4),
                                                         child: SizedBox(height: 25,
                                                             //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                            child: Text("Due Date")
+                                                            child: Text("End Date")
                                                         ),
                                                       )),
                                                 ],
@@ -203,6 +190,11 @@ class _ListProjectsState extends State<ListProjects> {
                                   itemBuilder: ( context, index) {
                                     if(index < displayListItems.length){
                                       //print(displayListItems[index]['orderDate'].runtimeType);
+                                      Color priHigh = Colors.green;
+                                      Color priMedium = Colors.orange;
+                                      Color priLow = Colors.red;
+                                      String priority = displayListItems[index]['priority'];
+                                      String status = displayListItems[index]['status'];
                                       return Column(
                                         children: [
                                           MaterialButton(height: 50,
@@ -223,7 +215,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding: const EdgeInsets.only(top: 4.0),
                                                         child: SizedBox(height: 25,
                                                             //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                            child: Text(displayListItems[index]['id']??"")
+                                                            child: Text(displayListItems[index]['project_id']??"")
                                                           //Text(displayListItems[index]['estVehicleId']??"")
                                                         ),
                                                       )),
@@ -231,7 +223,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top: 4.0),
                                                         child: SizedBox(height: 25,
-                                                         child: Text("${displayListItems[index]['name']}$index")
+                                                         child: Text("${displayListItems[index]['project_name']}$index")
                                                         ),
                                                       )),
                                                   Expanded(
@@ -240,8 +232,8 @@ class _ListProjectsState extends State<ListProjects> {
                                                         child: Container(alignment: Alignment.centerLeft,
                                                             child: Chip(
                                                               label: Text(displayListItems[index]['priority']),
-                                                              avatar: Icon(Icons.flag, size: 16, color: displayListItems[index]['priorityColor']),
-                                                              backgroundColor: displayListItems[index]['priorityColor'].withOpacity(0.1),
+                                                              avatar: Icon(Icons.flag, size: 16, color: priority == "High" ? priHigh : priority == "Medium" ? priMedium : priLow),
+                                                              backgroundColor: (priority == "High" ? priHigh : priority == "Medium" ? priMedium : priLow).withOpacity(0.1),
                                               )
                                                         ),
                                                       )),
@@ -256,12 +248,15 @@ class _ListProjectsState extends State<ListProjects> {
                                                             String member = entry.value;
                                                             return Positioned(
                                                               left: i * 16.0, // Adjust spacing for overlap
-                                                              child: CircleAvatar(
-                                                                radius: 12,
-                                                                backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
-                                                                child: Text(
-                                                                  member[0],
-                                                                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                                                              child: Tooltip(
+                                                                message: member,
+                                                                child: CircleAvatar(
+                                                                  radius: 12,
+                                                                  backgroundColor: Colors.primaries[i % Colors.primaries.length], // Different colors
+                                                                  child: Text(
+                                                                    member[0],
+                                                                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             );
@@ -275,7 +270,12 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding:  const EdgeInsets.only(top: 4),
                                                         child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
-                                                            Container(alignment: Alignment.centerLeft,decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: displayListItems[index]['statusColor']),
+                                                            Container(
+                                                              alignment: Alignment.centerLeft,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(20),
+                                                                  color: status == "Completed" ? priHigh : status == "ongoing" ? priMedium : priLow
+                                                              ),
                                                               height: 30,width: 120,
                                                               child: Center(child: Text( displayListItems[index]['status'],style: const TextStyle(color: Colors.white),)),
                                                             ),
@@ -288,7 +288,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding: const EdgeInsets.only(top: 4.0),
                                                         child: SizedBox(height: 25,
                                                             //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                            child: Text(displayListItems[index]['startDate']??"")
+                                                            child: Text(displayListItems[index]['start_date']??"")
                                                           //Text(displayListItems[index]['estVehicleId']??"")
                                                         ),
                                                       )),
@@ -297,7 +297,7 @@ class _ListProjectsState extends State<ListProjects> {
                                                         padding: const EdgeInsets.only(top: 4.0),
                                                         child: SizedBox(height: 25,
                                                             //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                            child: Text(displayListItems[index]['dueDate']??"")
+                                                            child: Text(displayListItems[index]['end_date']??"")
                                                           //Text(displayListItems[index]['estVehicleId']??"")
                                                         ),
                                                       )),

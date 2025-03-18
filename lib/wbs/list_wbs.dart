@@ -5,6 +5,8 @@ import 'package:timesheet_management/utils/customAppBar.dart';
 import 'package:timesheet_management/utils/customDrawer.dart';
 import 'package:timesheet_management/wbs/create_wbs.dart';
 
+import '../utils/api/get_api.dart';
+
 class ListWBS extends StatefulWidget {
   final WBSArguments args;
   const ListWBS({super.key, required this.args});
@@ -14,48 +16,31 @@ class ListWBS extends StatefulWidget {
 }
 
 class _ListWBSState extends State<ListWBS> {
-  final List displayListItems = [
-    {
-      'id': '2246',
-      'name': 'Project 01',
-      'projectName': 'WBS Task 01',
-      'priority': 'High',
-      'priorityColor': Colors.green,
-      'status': 'Ongoing',
-      'statusColor': Colors.orange,
-      'startDate': '16/12/2024',
-      'dueDate': '16/12/2024',
-      'members': ['Rahul',]
-    },
-    {
-      'id': '2334',
-      'name': 'Project 02',
-      'projectName': 'WBS Task 02',
-      'priority': 'Low',
-      'priorityColor': Colors.red,
-      'status': 'Completed',
-      'statusColor': Colors.green,
-      'startDate': '18/12/2024',
-      'dueDate': '18/12/2024',
-      'members': ['Ganesh' ]
-    },
-    {
-      'id': '2414',
-      'name': 'Project 03',
-      'projectName': 'WBS Task 03',
-      'priority': 'Medium',
-      'priorityColor': Colors.orange,
-      'status': 'Yet to start',
-      'statusColor': Colors.red,
-      'startDate': '20/12/2024',
-      'dueDate': '20/12/2024',
-      'members': [ 'Akhil', 'Kiran',"Tejes"]
-    },
-
-  ];
+   List displayListItems = [];
 
   final _horizontalScrollController = ScrollController();
   final _verticalScrollController = ScrollController();
+
+  getWBSList() async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WBSList_by_user_id/USER_00001";
+
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      displayListItems = response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch WBS list ----');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWBSList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +209,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: EdgeInsets.only(top: 4),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text("Start Date")
+                                                              child: Text("Actual Date")
                                                           ),
                                                         )),
                                                     const Expanded(
@@ -232,7 +217,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: EdgeInsets.only(top: 4),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text("Due Date")
+                                                              child: Text("End Date")
                                                           ),
                                                         )),
                                                   ],
@@ -252,6 +237,11 @@ class _ListWBSState extends State<ListWBS> {
                                     itemBuilder: ( context, index) {
                                       if(index < displayListItems.length){
                                         //print(displayListItems[index]['orderDate'].runtimeType);
+                                        Color priHigh = Colors.green;
+                                        Color priMedium = Colors.orange;
+                                        Color priLow = Colors.red;
+                                        String priority = displayListItems[index]['priority'];
+                                        String status = displayListItems[index]['status'];
                                         return Column(
                                           children: [
                                             MaterialButton(height: 50,
@@ -268,7 +258,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: const EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text(displayListItems[index]['id']??"")
+                                                              child: Text(displayListItems[index]['wbs_id']??"")
                                                             //Text(displayListItems[index]['estVehicleId']??"")
                                                           ),
                                                         )),
@@ -278,7 +268,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
                                                               child:
-                                                              Text("${displayListItems[index]['projectName']}$index")
+                                                              Text("${displayListItems[index]['project_name']}$index")
                                                             //Text(displayListItems[index]['billAddressName']??"")
                                                           ),
                                                         )),
@@ -298,8 +288,8 @@ class _ListWBSState extends State<ListWBS> {
                                                           child: Container(alignment: Alignment.centerLeft,
                                                               child: Chip(
                                                                 label: Text(displayListItems[index]['priority']),
-                                                                avatar: Icon(Icons.flag, size: 16, color: displayListItems[index]['priorityColor']),
-                                                                backgroundColor: displayListItems[index]['priorityColor'].withOpacity(0.1),
+                                                                avatar: Icon(Icons.flag, size: 16, color: priority == "High" ? priHigh : priority == "Medium" ? priMedium : priLow),
+                                                                backgroundColor: (priority == "High" ? priHigh : priority == "Medium" ? priMedium : priLow).withOpacity(0.1),
                                                               )
                                                           ),
                                                         )),
@@ -312,7 +302,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           child: Stack(
                                                             children: displayListItems[index]['members'].asMap().entries.map<Widget>((entry) {
                                                               int i = entry.key;
-                                                              String member = entry.value;
+                                                              String member = entry.value["member"];
                                                               return Positioned(
                                                                 left: i * 16.0,
                                                                 child: Tooltip(
@@ -338,7 +328,12 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding:  const EdgeInsets.only(top: 4),
                                                           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Container(alignment: Alignment.centerLeft,decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: displayListItems[index]['statusColor']),
+                                                              Container(
+                                                                alignment: Alignment.centerLeft,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(20),
+                                                                    color: status == "Completed" ? priHigh : status == "ongoing" ? priMedium : priLow
+                                                                ),
                                                                  height: 30,width: 120,
                                                                   child: Center(child: Text( displayListItems[index]['status'],style: const TextStyle(color: Colors.white),)),
                                                               ),
@@ -351,7 +346,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: const EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text(displayListItems[index]['startDate']??"")
+                                                              child: Text(displayListItems[index]['start_date']??"")
                                                             //Text(displayListItems[index]['estVehicleId']??"")
                                                           ),
                                                         )),
@@ -360,7 +355,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: const EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text(displayListItems[index]['dueDate']??"")
+                                                              child: Text(displayListItems[index]['end_date']??"")
                                                             //Text(displayListItems[index]['estVehicleId']??"")
                                                           ),
                                                         )),

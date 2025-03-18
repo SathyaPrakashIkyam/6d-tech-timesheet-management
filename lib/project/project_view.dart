@@ -28,67 +28,26 @@ class _ProjectViewState extends State<ProjectView> {
   Map project = {};
   String userId = "";
   List userList = [];
-  final List displayListItems = [
-    {
-      'id': '2246',
-      'name': 'Project 01',
-      'projectName': 'WBS Task 01',
-      'priority': 'High',
-      'priorityColor': Colors.green,
-      'status': 'Ongoing',
-      'statusColor': Colors.orange,
-      'startDate': '16/12/2024',
-      'dueDate': '16/12/2024',
-      'members': ['Rahul',],
-      'hours': '40',
-    },
-    {
-      'id': '2334',
-      'name': 'Project 02',
-      'projectName': 'WBS Task 02',
-      'priority': 'Low',
-      'priorityColor': Colors.red,
-      'status': 'Completed',
-      'statusColor': Colors.green,
-      'startDate': '18/12/2024',
-      'dueDate': '18/12/2024',
-      'members': ['Ganesh' ],
-      'hours': '80',
-    },
-    {
-      'id': '2414',
-      'name': 'Project 03',
-      'projectName': 'WBS Task 03',
-      'priority': 'Medium',
-      'priorityColor': Colors.orange,
-      'status': 'Yet to start',
-      'statusColor': Colors.red,
-      'startDate': '20/12/2024',
-      'dueDate': '20/12/2024',
-      'members': [ 'Akhil', 'Kiran',"Tejas"],
-      'hours': '100',
-    },
-
-  ];
+  final List displayListItems = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     project = widget.args.projectData;
-    projectId.text = project["id"] ?? "";
-    projectName.text = project["name"] ?? "";
+    projectId.text = project["project_id"] ?? "";
+    projectName.text = project["project_name"] ?? "";
     processStatus.text = project["status"] ?? "";
-    planStart.text = project["startDate"] ?? "";
-    planFinish.text = project["dueDate"] ?? "";
+    planStart.text = project["start_date"] ?? "";
+    planFinish.text = project["end_date"] ?? "";
     projectProfile.text = project["priority"] ?? "";
-    userId = project["id"] ?? "";
-    if(userId == "2444"){
+    userId = project["project_id"] ?? "";
+    if(userId == "PRD_00029"){
       userList.length = 3;
       displayListItems.length = 2;
-    } else if(userId == "2334") {
+    } else if(userId == "PRD_00030") {
       userList.length = 2;
       displayListItems.length = 3;
-    } else if(userId == "2414") {
+    } else if(userId == "PRD_00032") {
       userList.length = 1;
       displayListItems.length = 2;
     }
@@ -352,7 +311,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                         TextSpan(
                                                           children: [
                                                             TextSpan(
-                                                              text: "Planned Start:",
+                                                              text: "Actual Date:",
                                                               style: TextStyle(
                                                                 fontWeight: FontWeight.bold,
                                                                 fontSize: 12,
@@ -481,7 +440,7 @@ class _ProjectViewState extends State<ProjectView> {
                                                         TextSpan(
                                                           children: [
                                                             TextSpan(
-                                                              text: "Planned Finished:",
+                                                              text: "End Date:",
                                                               style: TextStyle(
                                                                 fontWeight: FontWeight.bold,
                                                                 fontSize: 12,
@@ -606,18 +565,18 @@ class _ProjectViewState extends State<ProjectView> {
                                                           shrinkWrap: true,
                                                           itemBuilder: (context, index) {
                                                             return Padding(
-                                                              padding: const EdgeInsets.only(left: 18, top: 10, bottom: 10),
+                                                              padding: const EdgeInsets.only(left: 18, top: 10, bottom: 20),
                                                               child: MaterialButton(
                                                                 onPressed: () {
 
                                                                 },
                                                                 child: Row(
                                                                   children: [
-                                                                    Expanded(child: Text(displayListItems[index]["id"])),
-                                                                    Expanded(child: Text(displayListItems[index]["projectName"])),
+                                                                    Expanded(child: Text(displayListItems[index]["project_id"])),
+                                                                    Expanded(child: Text(displayListItems[index]["project_name"])),
                                                                     Expanded(child: Text(displayListItems[index]["priority"])),
                                                                     Expanded(child: Text(displayListItems[index]["status"])),
-                                                                    Expanded(child: Text(displayListItems[index]["hours"])),
+                                                                    Expanded(child: Text(displayListItems[index]["hours"] ?? "")),
                                                                   ],
                                                                 ),
                                                               ),
