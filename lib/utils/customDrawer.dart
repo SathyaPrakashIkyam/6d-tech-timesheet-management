@@ -140,7 +140,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               contentPadding: const EdgeInsets.only(left: 0),
                               child: ListTile(
                                 onTap: () {
-                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                  Navigator.pushNamed(context, "/userList",arguments: UserListArguments(drawerWidth: drawerWidth,selectedDestination: 4));
                                 },
                                 leading:  SizedBox(width: 40,child: Padding(
                                   padding: const EdgeInsets.only(left: 4.0),
@@ -854,7 +854,7 @@ class _AppBarDrawerState extends State<AppBarDrawer> {
                               contentPadding: const EdgeInsets.only(left: 0),
                               child: ListTile(
                                 onTap: () {
-                                  Navigator.pushNamed(context, "/createUsers",arguments: CreateUsersArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                  Navigator.pushNamed(context, "/userList",arguments: UserListArguments(drawerWidth: drawerWidth,selectedDestination: 4));
                                 },
                                 leading:  SizedBox(width: 40,child: Padding(
                                   padding: const EdgeInsets.only(left: 4.0),

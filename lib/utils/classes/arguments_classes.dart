@@ -28,3 +28,9 @@ class CreateUsersArguments{
   final double selectedDestination;
   CreateUsersArguments({required this.drawerWidth, required this.selectedDestination});
 }
+
+class UserListArguments{
+  final double drawerWidth;
+  final double selectedDestination;
+  UserListArguments({required this.drawerWidth, required this.selectedDestination});
+}
