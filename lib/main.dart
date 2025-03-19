@@ -129,7 +129,7 @@ class InitialScreen extends StatefulWidget {
 class _InitialScreenState extends State<InitialScreen> {
   @override
   Widget build(BuildContext context) {
-    return window.sessionStorage["login"] == "success" ? const Dashboard() :const LoginScreen();
+    return window.sessionStorage["login"] == "success" ?   window.sessionStorage["userType"] =="Admin"? UserList(args: UserListArguments(selectedDestination: 4,drawerWidth: 200),): Dashboard() :const LoginScreen();
   }
 }
 

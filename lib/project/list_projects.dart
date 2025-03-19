@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:timesheet_management/utils/api/get_api.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
@@ -23,8 +25,7 @@ class _ListProjectsState extends State<ListProjects> {
   final _verticalScrollController = ScrollController();
 
   getProjectList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_projects";
-
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/${window.sessionStorage["userId"]}";
     var response = await getData(context: context,url: url);
     if (response != null) {
       displayListItems = response;

@@ -9,6 +9,7 @@ import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import 'package:timesheet_management/utils/customAppBar.dart';
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 
+import '../utils/api/get_api.dart';
 import '../utils/customDrawer.dart';
 import '../utils/custom_popup_dropdown/custom_popup_dropdown.dart';
 import '../utils/static_data/motows_colors.dart';
@@ -28,8 +29,8 @@ class _ListTimesheetState extends State<ListTimesheet> {
   final _verticalScrollController = ScrollController();
   List<bool> isSelected = [true, false, false];
 
-  String totalHours = "8:00"; // Default value
-  String selectedUser = "User 1"; // Default value
+  String totalHours = "0:00"; // Default value
+  String selectedUser = "Select User"; // Default value
   TextEditingController totalHr = TextEditingController(text: "00:00");
   List weekDays =[];
   List monthDays =[];
@@ -37,23 +38,44 @@ class _ListTimesheetState extends State<ListTimesheet> {
   int? selectedWeek;
   List<List<DateTime>> weeks = [];
   final TextEditingController dateController = TextEditingController();
-
+  String userId ="";
+  List userList =[];
+  String? selectedUserId;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    userId = window.sessionStorage["userId"]??"";
     getInitialRecords();
     generateWeeks();
   }
 
-  getInitialRecords(){
+  getInitialRecords() async {
+    if(userList.isEmpty) {
+      await getAllUsersByManagerID();
+    }
     DateTime today = DateTime.now();
     weekDays = getWeekDays(today);
     monthDays = getMonthDaysTillToday(today);
     dateController.text =DateFormat('dd-MM-yyyy').format(today);
   }
 
+  getAllUsersByManagerID() async {
+    String url="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/get_users_by_user_set/$userId";
+    var tempData = await  getData(context: context,url: url);
+    if(tempData!=null){
+      for(int i=0;i<tempData.length;i++){
+        userList.add({
+          "user_name":tempData[i]['user_name'],
+          "id":tempData[i]['id']
+        });
+      }
+      setState(() {
+
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,35 +131,47 @@ class _ListTimesheetState extends State<ListTimesheet> {
                                                 children: [
                                                   const Text("Timesheet", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
                                                   ),
-                                                  SizedBox(width: 15,),
+                                                  const SizedBox(width: 15,),
                                                   if(window.sessionStorage["userType"]=="Manager")
                                                   Container(
                                                     alignment: Alignment.topCenter,
                                                     color: Colors.lightBlueAccent[50],
-                                                    width: 100,height: 24,
+                                                    width: 200,height: 24,
                                                     child: LayoutBuilder(
                                                       builder: (BuildContext context,
                                                           BoxConstraints constraints) {
                                                         return CustomPopupMenuButton(
                                                           elevation: 4,
-                                                          decoration: customPopupDecoration(hintText: selectedUser,),
+                                                          decoration: customPopupDecoration(hintText: selectedUser,clear: (){
+                                                            setState(() {
+                                                              selectedUser ="Select User";
+                                                              selectedUserId = window.sessionStorage["userId"];
+                                                            });
+                                                          }),
                                                           itemBuilder: (
                                                               BuildContext context) {
-                                                            return ["User1","User2"].map((value) {
+                                                            return userList.map((value) {
                                                               return CustomPopupMenuItem(
                                                                   value: value,
-                                                                  text: value,
+                                                                  text: value['user_name'],
                                                                   child: Container()
                                                               );
                                                             }).toList();
                                                           },
                                                           onSelected: (value) {
-                                                            selectedUser =value;
-                                                            setState(() {
+                                                            try{
+                                                              print(value as Map);
+                                                              selectedUser =value['user_name'];
+                                                              selectedUserId = value['id'];
 
-                                                            });
-                                                          },
-                                                          onCanceled: () {
+                                                              setState(() {
+
+                                                              });
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                            },
+                                                            onCanceled: () {
 
                                                           },
                                                           hintText: "",
@@ -147,6 +181,7 @@ class _ListTimesheetState extends State<ListTimesheet> {
                                                       },
                                                     ),
                                                   ),
+
                                                 ],
                                               ),
                                               SizedBox(height: 40,
@@ -224,7 +259,7 @@ class _ListTimesheetState extends State<ListTimesheet> {
 
 
                                   if(isSelected[0])
-                                    DayExpandableTable(onTotalHoursUpdated: updateTotalHours, today:dateController.text),
+                                    DayExpandableTable(onTotalHoursUpdated: updateTotalHours, today:dateController.text,userId: selectedUserId),
 
                                   if(isSelected[1])
                                     WeeklyExpandableTable(onTotalHoursUpdated: updateTotalHours,weekDays:weekDays),
@@ -387,14 +422,14 @@ class _ListTimesheetState extends State<ListTimesheet> {
     return days;
   }
 
-  static customPopupDecoration({required String hintText}) {
+  static customPopupDecoration({required String hintText ,GestureTapCallback? clear}) {
     return InputDecoration(
       hoverColor: mHoverColor,
       disabledBorder:  InputBorder.none,
-      suffixIcon: const Icon(Icons.arrow_drop_down_circle_sharp, color: mSaveButton, size: 14),
+      suffixIcon: hintText!= "Select User" ?InkWell(onTap: clear,child: Icon(Icons.clear, color: Colors.redAccent, size: 16)):Icon(Icons.arrow_drop_down_circle_sharp, color: mSaveButton, size: 14),
       border:  InputBorder.none,
       constraints: const BoxConstraints(maxHeight: 30),
-      hintText: hintText=="" ?"Select":hintText ,
+      hintText: hintText=="" ?"Select User":hintText ,
       hintStyle:  TextStyle(fontSize:hintText!='Select'?18: 18, color:hintText!='Select'? Colors.black:Colors.black54),
       counterText: '',
       contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 12),

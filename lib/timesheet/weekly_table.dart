@@ -172,7 +172,7 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
 
   getTimeSheet({required fromDate, required toDate}) async {
 
-    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_userId_logDate/USER123/$fromDate/$toDate";
+    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_userId_logDate/${window.sessionStorage["userId"]}/$fromDate/$toDate";
     print(url);
     List tempData = await  getData(context: context,url: url);
     // Group by date
@@ -340,7 +340,13 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                 SizedBox(width: 100,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      if(employee.subRows.last.timeSheetId!="" && employee.subRows.last.wbs!="")
+                                      if(employee.subRows.isEmpty){
+                                        employee.subRows.add( SubRow("","", "", "","",""),);
+                                        setState(() {
+
+                                        });
+                                      }
+                                      else if(employee.subRows.last.timeSheetId!="" && employee.subRows.last.wbs!="")
                                       {
                                         employee.subRows.add( SubRow("","", "", "","",""),);
                                         setState(() {
@@ -518,7 +524,7 @@ class _WeeklyExpandableTableState extends State<WeeklyExpandableTable> {
                                           "project_id":  sub.projectId,
                                           "project_name": sub.projectName,
                                           "status": "pending",
-                                          "user_id": "USER123",
+                                          "user_id": window.sessionStorage["userId"],
                                           "wbs": sub.wbs,
                                         };
                                         print(tempJson);

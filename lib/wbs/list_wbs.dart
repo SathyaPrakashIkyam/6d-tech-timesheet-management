@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
@@ -22,7 +24,7 @@ class _ListWBSState extends State<ListWBS> {
   final _verticalScrollController = ScrollController();
 
   getWBSList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WBSList_by_user_id/USER_00001";
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WBSList_by_user_id/${window.sessionStorage["userId"]}";
 
     var response = await getData(context: context,url: url);
     if (response != null) {

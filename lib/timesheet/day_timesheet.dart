@@ -15,23 +15,18 @@ import '../utils/functions/data_functions.dart';
 class DayExpandableTable extends StatefulWidget {
   final Function(String) onTotalHoursUpdated;
   final String today;
-  const DayExpandableTable({super.key, required this.onTotalHoursUpdated, required this.today});
+  final String? userId;
+  const DayExpandableTable({super.key, required this.onTotalHoursUpdated, required this.today, this.userId});
 
   @override
   State<DayExpandableTable> createState() => _DayExpandableTableState();
 }
 
 class _DayExpandableTableState extends State<DayExpandableTable> {
-  List<Employee> employees = [
+  List<Employee> employees = [];
 
-
-  ];
-
-  List projectData =[
-    {"projectName":" M1_Singapore_BSS & Magik_Sep22","projectID":"23342"},
-    {"projectName":"Pro300","projectID":"11232"},
-    {"projectName":"Pro3001","projectID":"00232"}
-  ];
+  List projectData =[];
+  String userId="";
 
   @override
   void initState() {
@@ -39,12 +34,15 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
     super.initState();
     var dateNow = DateTime.now();
     String date= "${dateNow.day}-${dateNow.month}-${dateNow.year}";
+    userId = window.sessionStorage["userId"]??"";
     getInitialData(dateNow :date);
+    getProjectList();
   }
 
   getInitialData({required String dateNow}) async {
      List responseData = await getTimeSheet(date: getDate(dateNow));
      if(responseData.isEmpty){
+       employees=[];
        setState(() {
          employees.add(Employee(
            widget.today,
@@ -83,7 +81,7 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
   }
 
   getTimeSheet({required String date}) async {
-    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_date/USER123/$date";
+    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_date/$userId/$date";
     List tempData = await  getData(context: context,url: url);
     // Group by date
     Map groupedByDate = {};
@@ -107,25 +105,67 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
         "timeSheet": entry.value
       };
     }).toList();
+    print(result);
+    if(result.isNotEmpty) {
+      widget.onTotalHoursUpdated(result[0]['totalHrs']);
+    }
+    else{
+      widget.onTotalHoursUpdated("0:00");
+    }
     return result;
+
   }
+
+  getProjectList() async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/${window.sessionStorage["userId"]}";
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      projectData = response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch project list ----');
+    }
+  }
+
+  getProjectWBSbyProjectName(String projectName) async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WbsNames_by_project_name/$projectName";
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      return response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch project list ----');
+    }
+  }
+
+
 
 
   @override
   void didUpdateWidget(covariant DayExpandableTable oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    if (widget.today != oldWidget.today){
 
+    if(widget.userId!=null){
+      userId = widget.userId!;
+    }
+    if(widget.userId != oldWidget.userId) {
       employees=[];
-       getInitialData(dateNow: widget.today);
-
+      getInitialData(dateNow: widget.today);
+    }
+    else if (widget.today != oldWidget.today && oldWidget.today!=""){
+      employees=[];
+      getInitialData(dateNow: widget.today);
     }
 
   }
 
 
-
+  List wbsList =[];
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -158,7 +198,7 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
               child: ListView(
                 shrinkWrap: true,
                 children: employees.map((employee) {
-                  List wbsList =["WBS2","WBS33"];
+
                   return ExpansionTile(initiallyExpanded: true,
                     title: DataTable(
                       columnSpacing: 10,
@@ -241,16 +281,22 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                         return projectData.map((value) {
                                           return CustomPopupMenuItem(
                                               value: value,
-                                              text: value['projectName'],
+                                              text: value['project_name'],
                                               child: Container()
                                           );
                                         }).toList();
                                       },
-                                      onSelected: (value) {
+                                      onSelected: (value) async{
                                         value as Map;
+                                       List wbsDataList = await getProjectWBSbyProjectName(value['project_name'].toString());
+                                       wbsList= [];
+                                       for(int i=0;i<wbsDataList.length;i++){
+                                         wbsList.add(wbsDataList[i]['wbs_name']);
+                                       }
+
                                         setState(() {
-                                          employee.subRows[index].projectName=value['projectName'].toString();
-                                          employee.subRows[index].projectId=value['projectID'].toString();
+                                          employee.subRows[index].projectName=value['project_name'].toString();
+                                          employee.subRows[index].projectId=value['project_id'].toString();
                                         });
                                       },
                                       onCanceled: () {
@@ -286,7 +332,8 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                           );
                                         }).toList();
                                       },
-                                      onSelected: (value) {
+                                      onSelected: (value) async{
+
                                         setState(() {
                                           employee.subRows[index].wbs=value.toString();
                                         });
@@ -353,7 +400,7 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                             "project_id":  sub.projectId,
                                             "project_name": sub.projectName,
                                             "status": "pending",
-                                            "user_id": "USER123",
+                                            "user_id": window.sessionStorage["userId"],
                                             "wbs": sub.wbs,
                                           };
                                           print(tempJson);
@@ -405,13 +452,11 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                           onTap: () async {
                             await deleteById (employee.subRows[index].timeSheetId);
                             setState(() {
-
-                              print(employee.subRows[index].timeSheetId);
                               employee.subRows.removeAt(index); // Remove the row
                             });
                           },
                           child: const Icon(Icons.delete, color: Colors.red),
-                        ):SizedBox(),
+                        ):const SizedBox(),
                       );
                     }).toList(),
                   );
@@ -480,7 +525,7 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                               "status": action == "Approve" ?"Approved": "Rejected",
                             };
                             setState(() {
-                              sub.status ="Approved";
+                              sub.status = action == "Approve" ?"Approved": "Rejected";
                             });
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$action successful")));
 
