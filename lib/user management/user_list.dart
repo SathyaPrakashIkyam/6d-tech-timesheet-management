@@ -5,6 +5,8 @@ import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import '../utils/api/get_api.dart';
 import '../utils/customAppBar.dart';
 import '../utils/customDrawer.dart';
+import '../utils/custom_popup_dropdown/custom_popup_dropdown.dart';
+import '../utils/static_data/motows_colors.dart';
 
 class UserList extends StatefulWidget {
   final UserListArguments args;
@@ -20,6 +22,19 @@ class _UserListState extends State<UserList> {
   final _verticalScrollController = ScrollController();
 
   List displayUserList = [];
+  String userText="";
+  List<CustomPopupMenuEntry<String>> userEditList = <CustomPopupMenuEntry<String>>[
+    const CustomPopupMenuItem(
+      height: 40,
+      value: 'Edit',
+      child: Center(child: SizedBox(width: 350,child: Text('Edit',maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: 11)))),
+    ),
+    const CustomPopupMenuItem(
+      height: 40,
+      value: 'Change Password',
+      child: Center(child: SizedBox(width: 350,child: Text('Change Password',maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: 11)))),
+    ),
+  ];
 
   getUserList() async{
     String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/usermaster/get-all-user";
@@ -134,6 +149,7 @@ class _UserListState extends State<UserList> {
                                                           ),
                                                         )),
                                                     Expanded(
+                                                        flex: 2,
                                                         child: Padding(
                                                           padding: EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
@@ -141,8 +157,8 @@ class _UserListState extends State<UserList> {
                                                               child: Text("Email")
                                                           ),
                                                         )),
-
                                                     Expanded(
+                                                        flex: 2,
                                                         child: Padding(
                                                           padding: EdgeInsets.only(top: 4),
                                                           child: SizedBox(
@@ -174,6 +190,14 @@ class _UserListState extends State<UserList> {
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
                                                               child: Text("Type")
+                                                          ),
+                                                        )),
+                                                    Expanded(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(top: 4),
+                                                          child: SizedBox(height: 25,
+                                                              //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
+                                                              child: Text("")
                                                           ),
                                                         )),
                                                   ],
@@ -213,6 +237,7 @@ class _UserListState extends State<UserList> {
                                                           )
                                                       ),
                                                       Expanded(
+                                                        flex: 2,
                                                           child: Padding(
                                                             padding: const EdgeInsets.only(top: 4.0),
                                                             child: SizedBox(
@@ -222,6 +247,7 @@ class _UserListState extends State<UserList> {
                                                           )
                                                       ),
                                                       Expanded(
+                                                          flex: 2,
                                                           child: Padding(
                                                             padding: const EdgeInsets.only(top: 4.0),
                                                             child: SizedBox(
@@ -257,6 +283,34 @@ class _UserListState extends State<UserList> {
                                                             ),
                                                           )
                                                       ),
+                                                      Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 4.0),
+                                                            child: SizedBox(
+                                                                height: 25,
+                                                                child: CustomPopupMenuButton(
+                                                                  elevation: 0,
+                                                                  decoration: editUserDecoration(hintText:userText,),
+                                                                  hintText: '',
+                                                                  childWidth: 150,
+                                                                  offset: const Offset(1, 40),
+                                                                  tooltip: '',
+                                                                  itemBuilder:  (BuildContext context) {
+                                                                    return userEditList;
+                                                                  },
+                                                                  shape:  const RoundedRectangleBorder(
+                                                                    side: BorderSide(color: mTextFieldBorder),
+                                                                    borderRadius: BorderRadius.all(
+                                                                      Radius.circular(5),
+                                                                    ),
+                                                                  ),
+                                                                  onSelected: (String value)async{},
+                                                                  onCanceled: () {},
+                                                                  child: Container(),
+                                                                )
+                                                            ),
+                                                          )
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
@@ -286,6 +340,20 @@ class _UserListState extends State<UserList> {
           )
         ],
       ),
+    );
+  }
+
+  editUserDecoration({required String hintText, bool? error, bool ? isFocused,}) {
+    return InputDecoration(
+      hoverColor: Colors.transparent,
+      suffixIcon: const Icon(Icons.more_vert, color:Colors.black),
+      // border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+      border: InputBorder.none,
+      constraints: const BoxConstraints(maxHeight: 35),
+      hintText: hintText,
+      hintStyle: const TextStyle(fontSize: 14, color: Color(0xB2000000)),
+      counterText: '',
+      contentPadding: const EdgeInsets.fromLTRB(12, 00, 0, 0),
     );
   }
 }

@@ -152,6 +152,15 @@ class _ListWBSState extends State<ListWBS> {
                                                 child: Row(
                                                   children: [
                                                     const Expanded(
+                                                        flex: 2,
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(top: 4.0),
+                                                          child: SizedBox(height: 25,
+                                                              //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
+                                                              child: Text("Project Name")
+                                                          ),
+                                                        )),
+                                                    const Expanded(
                                                         child: Padding(
                                                           padding: EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
@@ -160,6 +169,7 @@ class _ListWBSState extends State<ListWBS> {
                                                           ),
                                                         )),
                                                     const Expanded(
+
                                                         child: Padding(
                                                           padding: EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
@@ -167,14 +177,7 @@ class _ListWBSState extends State<ListWBS> {
                                                               child: Text("WBS Name")
                                                           ),
                                                         )),
-                                                    const Expanded(
-                                                        child: Padding(
-                                                          padding: EdgeInsets.only(top: 4.0),
-                                                          child: SizedBox(height: 25,
-                                                              //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text("Project Name")
-                                                          ),
-                                                        )),
+
 
                                                     const Expanded(
                                                         child: Padding(
@@ -256,15 +259,7 @@ class _ListWBSState extends State<ListWBS> {
                                                 child: Row(
                                                   children: [
                                                     Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(top: 4.0),
-                                                          child: SizedBox(height: 25,
-                                                              //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
-                                                              child: Text(displayListItems[index]['wbs_id']??"")
-                                                            //Text(displayListItems[index]['estVehicleId']??"")
-                                                          ),
-                                                        )),
-                                                    Expanded(
+                                                        flex: 2,
                                                         child: Padding(
                                                           padding: const EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
@@ -279,11 +274,23 @@ class _ListWBSState extends State<ListWBS> {
                                                           padding: const EdgeInsets.only(top: 4.0),
                                                           child: SizedBox(height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
+                                                              child: Text(displayListItems[index]['wbs_id']??"")
+                                                            //Text(displayListItems[index]['estVehicleId']??"")
+                                                          ),
+                                                        )),
+                                                    Expanded(
+
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(top: 4.0),
+                                                          child: SizedBox(
+                                                              height: 25,
+                                                              //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
                                                               child:
-                                                              Text("${displayListItems[index]['name']}$index")
+                                                              Text("${displayListItems[index]['wbs_name']}$index")
                                                             //Text(displayListItems[index]['billAddressName']??"")
                                                           ),
                                                         )),
+
                                                     Expanded(
                                                         child: Padding(
                                                           padding: const EdgeInsets.only(top: 4.0),

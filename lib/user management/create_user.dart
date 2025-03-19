@@ -154,7 +154,7 @@ class _CreateUsersState extends State<CreateUsers> {
                                 "user_name": userName.text,
                                 "email": userEmail.text,
                                 "roles": userRole.text,
-                                "department": userDepartment.text,
+                                "department": "",
                                 "user_set": selectedUserId,
                                 "password": userPassword.text,
                               };
@@ -233,311 +233,311 @@ class _CreateUsersState extends State<CreateUsers> {
                       child: SingleChildScrollView(
                         controller: _horizontalScrollController,
                         scrollDirection: Axis.horizontal,
-                        child: Container(
-                          width: screenWidth - 300,
-                          // height: MediaQuery.of(context).size.height,
-                          alignment: Alignment.center,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 50,right: 0,left: 30),
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: screenWidth < 975 ? 1000 : screenWidth * 0.5 - 300,
-                                decoration:  BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10),
-                                  ),
-                                  border: Border.all(color: Colors.grey)
+                        child: SizedBox(
+                          width: screenWidth-300,
+                            child: Center(
+                                child: Padding(
+                            padding: const EdgeInsets.only(top: 80,right: 0,left: 30),
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 500,
+                            decoration:  BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 20,),
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 18.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:   [
-                                          Expanded(
-                                            child: Text(
-                                              "User Management", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
+                                border: Border.all(color: Colors.grey)
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20,),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 18.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children:   [
+                                      Expanded(
+                                        child: Text(
+                                          "User Management", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 20,),
-                                    Divider(height: 0.5,color: Colors.grey[500],thickness: 0.5,),
-                                    Form(
-                                      key: _formKey,
-                                      child: Center(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 20,),
+                                Divider(height: 0.5,color: Colors.grey[500],thickness: 0.5,),
+                                Form(
+                                  key: _formKey,
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("User Name:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    width: 400,
-                                                    child: TextFormField(
-                                                      style: const TextStyle(fontSize: 17),
-                                                      controller: userName,
-                                                      decoration: customerFieldDecoration(hintText: "User Name", controller: userName),
-                                                      onEditingComplete: () {
-
-                                                      },
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                              child: Text("User Name:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
                                             ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("User Email:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    width: 400,
-                                                    child: TextFormField(
-                                                      style: const TextStyle(fontSize: 17),
-                                                      controller: userEmail,
-                                                      decoration: customerFieldDecoration(hintText: "User Email", controller: userEmail),
-                                                      validator: (value) {
-                                                        if (value == null || value.isEmpty) {
-                                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter an email address")));
-                                                          return 'Please enter an email address';
-                                                        }
-                                                        const emailRegex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
-                                                        if (!RegExp(emailRegex).hasMatch(value)) {
-                                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter a valid email address")));
-                                                          return 'Please enter a valid email address';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("User Role:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    height: 33,
-                                                    width: 400,
-                                                    child: Focus(
-                                                        skipTraversal: true,
-                                                        descendantsAreFocusable: true,
-                                                        child: LayoutBuilder(
-                                                          builder: (BuildContext context, BoxConstraints constraints) {
-                                                            return CustomPopupMenuButton(
-                                                              decoration: customPopupDecoration(hintText: roleDrop),
-                                                              itemBuilder: (BuildContext context) {
-                                                                return userRolePopUpList;
-                                                              },
-                                                              hintText: "",
-                                                              childWidth: constraints.maxWidth,
-                                                              textController: userRole,
-                                                              shape:  const RoundedRectangleBorder(
-                                                                side: BorderSide(color: mTextFieldBorder),
-                                                                borderRadius: BorderRadius.all(
-                                                                  Radius.circular(5),
-                                                                )
-                                                              ),
-                                                              offset: const Offset(1, 40),
-                                                              tooltip: '',textAlign: TextAlign.left,
-                                                              onSelected: (value) {
-                                                                setState(() {
-                                                                  userRole.text = value;
-                                                                  roleDrop = value;
-                                                                });
-                                                              },
-                                                              onCanceled: () {
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 18, right: 18),
+                                              child: SizedBox(
+                                                width: 400,
+                                                child: TextFormField(
+                                                  style: const TextStyle(fontSize: 17),
+                                                  controller: userName,
+                                                  decoration: customerFieldDecoration(hintText: "User Name", controller: userName),
+                                                  onEditingComplete: () {
 
-                                                              },
-                                                              child: Container(),
-                                                            );
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                              child: Text("User Email:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 18, right: 18),
+                                              child: SizedBox(
+                                                width: 400,
+                                                child: TextFormField(
+                                                  style: const TextStyle(fontSize: 17),
+                                                  controller: userEmail,
+                                                  decoration: customerFieldDecoration(hintText: "User Email", controller: userEmail),
+                                                  validator: (value) {
+                                                    if (value == null || value.isEmpty) {
+                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter an email address")));
+                                                      return 'Please enter an email address';
+                                                    }
+                                                    const emailRegex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
+                                                    if (!RegExp(emailRegex).hasMatch(value)) {
+                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter a valid email address")));
+                                                      return 'Please enter a valid email address';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                              child: Text("User Role:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 18, right: 18),
+                                              child: SizedBox(
+                                                height: 33,
+                                                width: 400,
+                                                child: Focus(
+                                                    skipTraversal: true,
+                                                    descendantsAreFocusable: true,
+                                                    child: LayoutBuilder(
+                                                      builder: (BuildContext context, BoxConstraints constraints) {
+                                                        return CustomPopupMenuButton(
+                                                          decoration: customPopupDecoration(hintText: roleDrop),
+                                                          itemBuilder: (BuildContext context) {
+                                                            return userRolePopUpList;
                                                           },
-                                                        )
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("User Department:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    height: 33,
-                                                    width: 400,
-                                                    child: Focus(
-                                                        skipTraversal: true,
-                                                        descendantsAreFocusable: true,
-                                                        child: LayoutBuilder(
-                                                          builder: (BuildContext context, BoxConstraints constraints) {
-                                                            return CustomPopupMenuButton(
-                                                              decoration: customPopupDecoration(hintText: depDrop),
-                                                              itemBuilder: (BuildContext context) {
-                                                                return userDepartmentPopUpList;
-                                                              },
-                                                              hintText: "",
-                                                              childWidth: constraints.maxWidth,
-                                                              textController: userDepartment,
-                                                              shape:  const RoundedRectangleBorder(
-                                                                side: BorderSide(color: mTextFieldBorder),
-                                                                borderRadius: BorderRadius.all(
-                                                                  Radius.circular(5),
-                                                                ),
-                                                              ),
-                                                              offset: const Offset(1, 40),
-                                                              tooltip: '',textAlign: TextAlign.left,
-                                                              onSelected: (value) {
-                                                                setState(() {
-                                                                  userDepartment.text = value;
-                                                                  depDrop = value;
-                                                                });
-                                                              },
-                                                              onCanceled: () {
-
-                                                              },
-                                                              child: Container(),
-                                                            );
-                                                          },
-                                                        )
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            if(userRole.text == "Employee")
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("Select Manager:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                // Padding(
-                                                //   padding: const EdgeInsets.only(left: 18, right: 0),
-                                                //   child: SizedBox(
-                                                //     width: 400,
-                                                //     child: TextFormField(
-                                                //       style: const TextStyle(fontSize: 17),
-                                                //       controller: userType,
-                                                //       decoration: customerFieldDecoration(hintText: "Select Manager", controller: userType),
-                                                //     ),
-                                                //   ),
-                                                // ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    width: 400,
-                                                    child: CustomTextFieldSearch(
-                                                      controller: userType,
-                                                      textStyle: const TextStyle(fontSize: 17),
-                                                      showAdd: false,
-                                                      decoration: searchPartNoDecoration(
-                                                          hintText: "Search Manager",
-                                                          controller: userType,
-                                                          onClear: () {
+                                                          hintText: "",
+                                                          childWidth: constraints.maxWidth,
+                                                          textController: userRole,
+                                                          shape:  const RoundedRectangleBorder(
+                                                              side: BorderSide(color: mTextFieldBorder),
+                                                              borderRadius: BorderRadius.all(
+                                                                Radius.circular(5),
+                                                              )
+                                                          ),
+                                                          offset: const Offset(1, 40),
+                                                          tooltip: '',textAlign: TextAlign.left,
+                                                          onSelected: (value) {
                                                             setState(() {
-                                                              userType.clear();
-                                                              selectedUserId="";
+                                                              userRole.text = value;
+                                                              roleDrop = value;
                                                             });
                                                           },
-                                                      ),
-                                                      future: () {
-                                                        return getManagerRole();
+                                                          onCanceled: () {
+
+                                                          },
+                                                          child: Container(),
+                                                        );
                                                       },
-                                                      getSelectedValue: (SearchManagerRole value){
-                                                        setState(() {
-                                                          userType.text = value.label;
-                                                          selectedUserId = value.id;
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
+                                                    )
                                                 ),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("User Designation:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0),
-                                                  child: SizedBox(
-                                                    width: 400,
-                                                    child: TextFormField(
-                                                      style: const TextStyle(fontSize: 17),
-                                                      controller: userDesignation,
-                                                      decoration: customerFieldDecoration(hintText: "User Designation", controller: userDesignation),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
-                                                  child: Text("Password:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 18, right: 0, bottom: 20),
-                                                  child: SizedBox(
-                                                    width: 400,
-                                                    child: TextFormField(
-                                                      style: const TextStyle(fontSize: 17),
-                                                      controller: userPassword,
-                                                      obscureText: showHidePassword,
-                                                      enableSuggestions: false,
-                                                      autocorrect: false,
-                                                      decoration: decorationInputPassword("Enter user Password",passWordColor, showHidePassword,passwordHideAndViewFunc),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
+                                        // Column(
+                                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     const Padding(
+                                        //       padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                        //       child: Text("User Department:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                        //     ),
+                                        //     Padding(
+                                        //       padding: const EdgeInsets.only(left: 18, right: 0),
+                                        //       child: SizedBox(
+                                        //         height: 33,
+                                        //         width: 400,
+                                        //         child: Focus(
+                                        //             skipTraversal: true,
+                                        //             descendantsAreFocusable: true,
+                                        //             child: LayoutBuilder(
+                                        //               builder: (BuildContext context, BoxConstraints constraints) {
+                                        //                 return CustomPopupMenuButton(
+                                        //                   decoration: customPopupDecoration(hintText: depDrop),
+                                        //                   itemBuilder: (BuildContext context) {
+                                        //                     return userDepartmentPopUpList;
+                                        //                   },
+                                        //                   hintText: "",
+                                        //                   childWidth: constraints.maxWidth,
+                                        //                   textController: userDepartment,
+                                        //                   shape:  const RoundedRectangleBorder(
+                                        //                     side: BorderSide(color: mTextFieldBorder),
+                                        //                     borderRadius: BorderRadius.all(
+                                        //                       Radius.circular(5),
+                                        //                     ),
+                                        //                   ),
+                                        //                   offset: const Offset(1, 40),
+                                        //                   tooltip: '',textAlign: TextAlign.left,
+                                        //                   onSelected: (value) {
+                                        //                     setState(() {
+                                        //                       userDepartment.text = value;
+                                        //                       depDrop = value;
+                                        //                     });
+                                        //                   },
+                                        //                   onCanceled: () {
+                                        //
+                                        //                   },
+                                        //                   child: Container(),
+                                        //                 );
+                                        //               },
+                                        //             )
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        if(userRole.text == "Employee")
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                                child: Text("Select Manager:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                              ),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.only(left: 18, right: 0),
+                                              //   child: SizedBox(
+                                              //     width: 400,
+                                              //     child: TextFormField(
+                                              //       style: const TextStyle(fontSize: 17),
+                                              //       controller: userType,
+                                              //       decoration: customerFieldDecoration(hintText: "Select Manager", controller: userType),
+                                              //     ),
+                                              //   ),
+                                              // ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 18, right: 18),
+                                                child: SizedBox(
+                                                  width: 400,
+                                                  child: CustomTextFieldSearch(
+                                                    controller: userType,
+                                                    textStyle: const TextStyle(fontSize: 17),
+                                                    showAdd: false,
+                                                    decoration: searchPartNoDecoration(
+                                                      hintText: "Search Manager",
+                                                      controller: userType,
+                                                      onClear: () {
+                                                        setState(() {
+                                                          userType.clear();
+                                                          selectedUserId="";
+                                                        });
+                                                      },
+                                                    ),
+                                                    future: () {
+                                                      return getManagerRole();
+                                                    },
+                                                    getSelectedValue: (SearchManagerRole value){
+                                                      setState(() {
+                                                        userType.text = value.label;
+                                                        selectedUserId = value.id;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                              child: Text("User Designation:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 18, right: 18),
+                                              child: SizedBox(
+                                                width: 400,
+                                                child: TextFormField(
+                                                  style: const TextStyle(fontSize: 17),
+                                                  controller: userDesignation,
+                                                  decoration: customerFieldDecoration(hintText: "User Designation", controller: userDesignation),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 18, top: 15, bottom: 10),
+                                              child: Text("Password:", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 18, right: 18, bottom: 30),
+                                              child: SizedBox(
+                                                width: 400,
+                                                child: TextFormField(
+                                                  style: const TextStyle(fontSize: 17),
+                                                  controller: userPassword,
+                                                  obscureText: showHidePassword,
+                                                  enableSuggestions: false,
+                                                  autocorrect: false,
+                                                  decoration: decorationInputPassword("Enter user Password",passWordColor, showHidePassword,passwordHideAndViewFunc),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ),
+                            )
+                        )
                       ),
                     ),
                   ),
