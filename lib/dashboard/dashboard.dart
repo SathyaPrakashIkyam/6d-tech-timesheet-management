@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'dart:html';
 
+import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timesheet_management/dashboard/recent_wbs.dart';
@@ -43,10 +44,13 @@ class _DashboardState extends State<Dashboard> {
     // getInitialData();
   }
   Map snap ={};
-
+  final _horizontalScrollController = ScrollController();
+  final _verticalScrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     //return AddNewPurchaseOrder(drawerWidth: 180,selectedDestination: 4.2,);
+    print('-------- dash board width ------');
+    print(MediaQuery.of(context).size.width);
     return Scaffold(
       appBar: const PreferredSize(
           preferredSize: Size.fromHeight(60), child: CustomAppBar()),
@@ -56,7 +60,35 @@ class _DashboardState extends State<Dashboard> {
         children: [
           CustomDrawer(drawerWidth,0),
 
-          const Expanded(child: HomeScreen()),
+           Expanded(
+              child: AdaptiveScrollbar(
+                  controller: _verticalScrollController,
+                  underColor: Colors.blueGrey.withOpacity(0.3),
+                  sliderDefaultColor: Colors.grey.withOpacity(0.7),
+                  sliderActiveColor: Colors.grey,
+                  position: ScrollbarPosition.right,
+                  child: AdaptiveScrollbar(
+                      position: ScrollbarPosition.bottom,
+                      underColor: Colors.blueGrey.withOpacity(0.3),
+                      sliderDefaultColor: Colors.grey.withOpacity(0.7),
+                      sliderActiveColor: Colors.grey,
+                      controller: _horizontalScrollController,
+                      child: SingleChildScrollView(
+                          controller: _verticalScrollController,
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                              controller: _horizontalScrollController,
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9 > 1600 ? MediaQuery.of(context).size.width * 0.9 : 1600,
+                                  height: 1000,
+                                  child: const HomeScreen()
+                              )
+                          )
+                      )
+                  )
+              )
+          ),
         ],
       ),
     );
@@ -390,8 +422,9 @@ class _ManagerViewState extends State<ManagerView> {
 
   List displayProjectListItems = [];
   List displayWBSListItems = [];
+  bool isLoading = true;
   getProjectList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/USER_00090";
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/${window.sessionStorage["userId"]}";
 
     var response = await getData(context: context,url: url);
     if (response != null) {
@@ -404,7 +437,7 @@ class _ManagerViewState extends State<ManagerView> {
     }
   }
   getWBSList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WBSList_by_user_id/USER_00090";
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WBSList_by_user_id/${window.sessionStorage["userId"]}";
 
     var response = await getData(context: context,url: url);
     if (response != null) {
@@ -435,7 +468,26 @@ class _ManagerViewState extends State<ManagerView> {
     await getProjectList();
     await getWBSList();
     mergeLists();
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  String formatBudget(int budget) {
+    if (budget >= 10000000) {
+      double crore = budget / 10000000;
+      return "${crore.toStringAsFixed(1)} Cr";
+    } else if (budget >= 100000) {
+      double lakh = budget / 100000;
+      return "${lakh.toStringAsFixed(1)} Lakhs";
+    } else if (budget >= 1000) {
+      double thousand = budget / 1000;
+      return "${thousand.toStringAsFixed(1)} K";
+    } else if (budget >= 100) {
+      return "$budget";
+    } else {
+      return budget.toString();
+    }
   }
 
 
@@ -445,9 +497,11 @@ class _ManagerViewState extends State<ManagerView> {
     fetchData();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    return   Column(
+    return  Column(
       children: [
 
         Row(
@@ -586,7 +640,7 @@ class _ManagerViewState extends State<ManagerView> {
                                                      child: Row(
                                                        children: [
                                                          const Text("Budget :"),
-                                                         Text("${mergedList[i]['budget']}",style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                                                         Text(formatBudget(mergedList[i]['budget']),style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
                                                        ],
                                                      ),
                                                    ),
@@ -625,44 +679,44 @@ class _ManagerViewState extends State<ManagerView> {
                                               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                children: [
                                                  Padding(
-                                                   padding: EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
+                                                   padding: const EdgeInsets.only(left: 8.0,right: 2,top: 8,bottom: 8),
                                                    child: SizedBox(width: 260,
                                                      child: Row(
                                                        children: [
-                                                         Text("Total Employees : "),
-                                                         Text("${mergedList[i]['members'].length}",style: TextStyle(fontWeight: FontWeight.bold)),
+                                                         const Text("Total Employees : "),
+                                                         Text("${mergedList[i]['members'].length}",style: const TextStyle(fontWeight: FontWeight.bold)),
                                                        ],
                                                      ),
                                                    ),
                                                  ),
 
                                                  Padding(
-                                                   padding: EdgeInsets.only(left: 3.0),
+                                                   padding: const EdgeInsets.only(left: 3.0),
                                                    child: SizedBox(width: 150,
                                                      child: Row(
                                                        children: [
-                                                         Text("Total WBS :"),
-                                                         Text("${mergedList[i]['wbs_list'].length}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
+                                                         const Text("Total WBS :"),
+                                                         Text("${mergedList[i]['wbs_list'].length}",style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.green)),
                                                        ],
                                                      ),
                                                    ),
                                                  ),
 
                                                  Padding(
-                                                   padding:  EdgeInsets.only(left: 3.0),
+                                                   padding:  const EdgeInsets.only(left: 3.0),
                                                    child: SizedBox(width: 200,
                                                      child: Row(
                                                        children: [
-                                                         Text("Status :"),
+                                                         const Text("Status :"),
                                                          Padding(
-                                                           padding: EdgeInsets.only(left: 8.0,right: 8),
-                                                           child: Text("${mergedList[i]['status'].length}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                                                           padding: const EdgeInsets.only(left: 8.0,right: 8),
+                                                           child: Text("${mergedList[i]['status']}",style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
                                                          ),
                                                        ],
                                                      ),
                                                    ),
                                                  ),
-                                                 Padding(
+                                                 const Padding(
                                                    padding:  EdgeInsets.only(left: 3.0),
                                                    child: SizedBox(width: 200,
                                                      child: Row (
@@ -729,20 +783,28 @@ class _ManagerViewState extends State<ManagerView> {
               child: Card(elevation: 8,
                 child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
                   height: 400,
-                  child:   const Column(
+                  child:    Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 14,),
-                      Padding(
+                      const SizedBox(height: 14,),
+                      const Padding(
                         padding: EdgeInsets.only(left: 18.0),
                         child: Text("Recent WBS",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold)),
                       ),
-                      SizedBox(height: 14,),
+                      const SizedBox(height: 14,),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              RecentWBS(),
+                              isLoading
+                                  ? const Center(child: CircularProgressIndicator()) // Show loader
+                                  : SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    RecentWBS(wbsList: displayWBSListItems), // Rebuild after API call
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
