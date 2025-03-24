@@ -286,7 +286,7 @@ class _ListWBSState extends State<ListWBS> {
                                                               height: 25,
                                                               //   decoration: state.text.isNotEmpty ?BoxDecoration():BoxDecoration(boxShadow: [BoxShadow(color:Color(0xFFEEEEEE),blurRadius: 2)]),
                                                               child:
-                                                              Text("${displayListItems[index]['wbs_name']}$index")
+                                                              Text("${displayListItems[index]['wbs_name']}")
                                                             //Text(displayListItems[index]['billAddressName']??"")
                                                           ),
                                                         )),
