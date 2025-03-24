@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
 class RecentWBS extends StatefulWidget {
-  const RecentWBS({super.key});
+  final List wbsList;
+  const RecentWBS({super.key, required this.wbsList});
 
   @override
   State<RecentWBS> createState() => _RecentWBSState();
 }
 
 class _RecentWBSState extends State<RecentWBS> {
+
+  List wbsDisplayList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    wbsDisplayList = widget.wbsList;
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,8 +24,12 @@ class _RecentWBSState extends State<RecentWBS> {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 10,
+          itemCount: wbsDisplayList.length,
           itemBuilder:(context, index) {
+            Color priHigh = Colors.green;
+            Color priMedium = Colors.orange;
+            Color priLow = Colors.red;
+            String priority = wbsDisplayList[index]['priority'];
             return SizedBox(height: 120,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -53,9 +66,9 @@ class _RecentWBSState extends State<RecentWBS> {
                             Column(crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
-                                Text("WBS $index"),
+                                Text("${wbsDisplayList[index]["wbs_id"]}"),
                                 const SizedBox(height: 20,),
-                                Text("testikyam$index@gmail.com"),
+                                Text("${wbsDisplayList[index]["project_name"]}"),
                               ],
                             ),
                             Padding(
@@ -64,7 +77,7 @@ class _RecentWBSState extends State<RecentWBS> {
                                   child: ElevatedButton(
                                     onPressed: (){},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff0063B2),
+                                      backgroundColor: priority == "High" ? priHigh : priority == "Medium" ? priMedium : priLow,
                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
@@ -72,7 +85,15 @@ class _RecentWBSState extends State<RecentWBS> {
                                       elevation: 4,
                                     ),
 
-                                    child:  Container(width: 60,alignment: Alignment.center,height: 20,child: Text(index==3?"Medium":'High', style: TextStyle(color: Colors.white, fontSize: 16))),
+                                    child:  Container(
+                                        width: 60,
+                                        alignment: Alignment.center,
+                                        height: 20,
+                                        child: Text(
+                                            "${wbsDisplayList[index]["priority"]}",
+                                            style: const TextStyle(color: Colors.white, fontSize: 16)
+                                        )
+                                    ),
                                   ),
                                 )
 
