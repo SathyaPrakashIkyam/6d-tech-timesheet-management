@@ -654,7 +654,7 @@ class _ManagerViewState extends State<ManagerView> {
                                                          const Text("Avl Budget :"),
                                                          Padding(
                                                            padding: const EdgeInsets.only(left: 8.0,right: 8),
-                                                           child: Text("${mergedList[i]['available_budget']}",style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                                           child: Text(formatBudget(mergedList[i]['available_budget']),style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
 
                                                          ),
                                                        ],
