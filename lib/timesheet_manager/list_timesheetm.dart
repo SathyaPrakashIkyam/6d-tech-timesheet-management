@@ -9,21 +9,22 @@ import 'package:timesheet_management/utils/classes/arguments_classes.dart';
 import 'package:timesheet_management/utils/customAppBar.dart';
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 
+import '../timesheet/monthly_table.dart';
 import '../utils/api/get_api.dart';
 import '../utils/customDrawer.dart';
 import '../utils/custom_popup_dropdown/custom_popup_dropdown.dart';
 import '../utils/static_data/motows_colors.dart';
-import 'monthly_table.dart';
 
-class ListTimesheet extends StatefulWidget {
-  final ListTimeSheetArguments args;
-  const ListTimesheet({super.key, required this.args});
+
+class ListTimesheetManager extends StatefulWidget {
+  final ListTimeSheetMArguments args;
+  const ListTimesheetManager({super.key, required this.args});
 
   @override
-  State<ListTimesheet> createState() => _ListTimesheetState();
+  State<ListTimesheetManager> createState() => _ListTimesheetManagerState();
 }
 
-class _ListTimesheetState extends State<ListTimesheet> {
+class _ListTimesheetManagerState extends State<ListTimesheetManager> {
 
   final _horizontalScrollController = ScrollController();
   final _verticalScrollController = ScrollController();
@@ -84,10 +85,10 @@ class _ListTimesheetState extends State<ListTimesheet> {
     return  Scaffold(
       appBar: const PreferredSize(    preferredSize: Size.fromHeight(60),
           child: CustomAppBar()),
-      drawer: const AppBarDrawer(drawerWidth: 200,selectedDestination: 3),
+      drawer: const AppBarDrawer(drawerWidth: 200,selectedDestination: 4),
       body: Row(
         children: [
-          CustomDrawer(widget.args.drawerWidth,3),
+          CustomDrawer(widget.args.drawerWidth,4),
           Expanded(
             child: Scaffold(
               body:AdaptiveScrollbar(
@@ -129,12 +130,60 @@ class _ListTimesheetState extends State<ListTimesheet> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children:   [
-                                              const Row(
+                                              Row(
                                                 children: [
-                                                  Text("Timesheet", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
+                                                  const Text("Timesheet", style: TextStyle(color: Colors.indigo, fontSize: 22, fontWeight: FontWeight.bold),
                                                   ),
-                                                  SizedBox(width: 15,),
+                                                  const SizedBox(width: 15,),
+                                                  if(window.sessionStorage["userType"]=="Manager" || window.sessionStorage["userType"] =="Department Head")
+                                                  Container(
+                                                    alignment: Alignment.topCenter,
+                                                    color: Colors.lightBlueAccent[50],
+                                                    width: 200,height: 24,
+                                                    child: LayoutBuilder(
+                                                      builder: (BuildContext context,
+                                                          BoxConstraints constraints) {
+                                                        return CustomPopupMenuButton(
+                                                          elevation: 4,
+                                                          decoration: customPopupDecoration(hintText: selectedUser,clear: (){
+                                                            setState(() {
+                                                              selectedUser ="Select User";
+                                                              selectedUserId = window.sessionStorage["userId"];
+                                                            });
+                                                          }),
+                                                          itemBuilder: (
+                                                              BuildContext context) {
+                                                            return userList.map((value) {
+                                                              return CustomPopupMenuItem(
+                                                                  value: value,
+                                                                  text: value['user_name'],
+                                                                  child: Container()
+                                                              );
+                                                            }).toList();
+                                                          },
+                                                          onSelected: (value) {
+                                                            try{
+                                                              print(value as Map);
+                                                              selectedUser =value['user_name'];
+                                                              selectedUserId = value['id'];
 
+                                                              setState(() {
+
+                                                              });
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                            },
+                                                            onCanceled: () {
+
+                                                          },
+                                                          hintText: "",
+                                                          childWidth: constraints.maxWidth,
+                                                          child: Container(),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
 
                                                 ],
                                               ),
@@ -377,7 +426,7 @@ class _ListTimesheetState extends State<ListTimesheet> {
     return InputDecoration(
       hoverColor: mHoverColor,
       disabledBorder:  InputBorder.none,
-      suffixIcon: hintText!= "Select User" ?InkWell(onTap: clear,child: const Icon(Icons.clear, color: Colors.redAccent, size: 16)):const Icon(Icons.arrow_drop_down_circle_sharp, color: mSaveButton, size: 14),
+      suffixIcon: hintText!= "Select User" ?InkWell(onTap: clear,child: Icon(Icons.clear, color: Colors.redAccent, size: 16)):Icon(Icons.arrow_drop_down_circle_sharp, color: mSaveButton, size: 14),
       border:  InputBorder.none,
       constraints: const BoxConstraints(maxHeight: 30),
       hintText: hintText=="" ?"Select User":hintText ,

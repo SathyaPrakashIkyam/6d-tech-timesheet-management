@@ -247,6 +247,8 @@ class _LoginScreenState extends State<LoginScreen> {
       window.sessionStorage["login"] = "success";
       window.sessionStorage["userType"] = data['role'];
       window.sessionStorage["userId"] = data['user_id'];
+      window.sessionStorage["userName"] = emailController.text;
+
       Navigator.pushNamed(context, "/dashboard");
     }
 

@@ -1,87 +1,179 @@
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
+import 'package:timesheet_management/timesheet/day_timesheet.dart';
 import 'package:timesheet_management/utils/api/post_api.dart';
 import 'package:timesheet_management/utils/static_data/motows_colors.dart';
-import 'package:http/http.dart' as http;
+
 import '../utils/api/get_api.dart';
 import '../utils/custom_popup_dropdown/custom_popup_dropdown.dart';
 import '../utils/functions/data_functions.dart';
 
-
-class DayExpandableTable extends StatefulWidget {
+class MonthlyTable extends StatefulWidget {
   final Function(String) onTotalHoursUpdated;
-  final String today;
+  final List weekDays;
   final String? userId;
-  const DayExpandableTable({super.key, required this.onTotalHoursUpdated, required this.today, this.userId});
+  const MonthlyTable({super.key, required this.onTotalHoursUpdated, required this.weekDays, this.userId});
 
   @override
-  State<DayExpandableTable> createState() => _DayExpandableTableState();
+  State<MonthlyTable> createState() => _MonthlyTableState();
 }
 
-class _DayExpandableTableState extends State<DayExpandableTable> {
+class _MonthlyTableState extends State<MonthlyTable>  {
   List<Employee> employees = [];
 
   List projectData =[];
-  String userId="";
 
+  List weekDays =[];
+  DateTime selectedMonths = DateTime.now();
+  int? selectedWeek;
+  List weeks = [];
+  List wbsList = [];
+  List daysInWeek =[];
+  String userId="";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    var dateNow = DateTime.now();
-    String date= "${dateNow.day}-${dateNow.month}-${dateNow.year}";
+    weekDays= widget.weekDays;
     userId = window.sessionStorage["userId"]??"";
-    getInitialData(dateNow :date);
+    getInitialData();
     getProjectList();
   }
 
-  getInitialData({required String dateNow}) async {
-     List responseData = await getTimeSheet(date: getDate(dateNow));
-     if(responseData.isEmpty){
-       employees=[];
-       setState(() {
-         employees.add(Employee(
-           widget.today,
-           "",
-           "Pending",
-           [
-             SubRow("", "", "", "", "",""),
-           ],
-         ),);
-       });
-     }
-     else
-     {
-       employees=[];
-       for(int i=0;i<responseData.length;i++){
-         List<SubRow> subList =[];
-         for(int j =0;j<responseData[i]['timeSheet'].length;j++){
-           subList.add(
-             SubRow(responseData[i]['timeSheet'][j]['timesheet_id'],responseData[i]['timeSheet'][j]['project_name'], responseData[i]['timeSheet'][j]['project_id'], responseData[i]['timeSheet'][j]['wbs'], responseData[i]['timeSheet'][j]['daily_log'],window.sessionStorage["userType"] =="Department Head" ? responseData[i]['timeSheet'][j]['hod_status']:responseData[i]['timeSheet'][j]['status']),
-           );
-         }
-         employees.add(
-           Employee(
-             widget.today,
-             "${responseData[i]['totalHrs']}",
-             "Pending",
-             subList,
-           ),
-         );
-       }
-     }
+  Future<void> _selectMonth(BuildContext context) async {
+    DateTime? picked =  await showMonthPicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2050)
+    );
+
+    if (picked != null && picked != selectedMonths) {
+      selectedMonths =picked;
+      weeks.clear();
+      var weeksOfMonth =getAllWeeksOfMonth(picked);
+      daysInWeek= weeksOfMonth;
+      for (int i = 0; i < weeksOfMonth.length; i++) {
+        weeks.add(i);
+
+      }
+      // for(int i=0;i<totalWeeks;i++){
+      //   weeks.add(i);
+      // }
+      setState(() {
+
+        selectedWeek = null;
+        // generateWeeks();
+      });
+    }
+  }
+
+  List getAllWeeksOfMonth(DateTime selectedDate) {
+    DateTime firstDayOfMonth = DateTime(selectedDate.year, selectedDate.month, 1);
+    DateTime lastDayOfMonth = DateTime(selectedDate.year, selectedDate.month + 1, 0);
+
+    // Find the first Monday of the month (Adjust to Sunday if needed)
+    DateTime firstMonday = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday ));
+
+    List weeks = [];
+    DateTime currentWeekStart = firstMonday;
+    while (currentWeekStart.isBefore(lastDayOfMonth) || currentWeekStart.isAtSameMomentAs(lastDayOfMonth)) {
+      List week = [];
+
+      for (int i = 0; i < 7; i++) {
+        DateTime currentDate = currentWeekStart.add(Duration(days: i));
+        if (currentDate.month == selectedDate.month) {
+          week.add(DateFormat('dd-MM-yyyy').format(currentDate));
+        }
+      }
+      if(week.isNotEmpty) {
+        weeks.add(week);
+      }
+      currentWeekStart = currentWeekStart.add(const Duration(days: 7));
+    }
+
+    return weeks;
+  }
+  getInitialData() async {
+    weeks=[];
+    daysInWeek = getAllWeeksOfMonth(selectedMonths);
+    for (int i = 0; i < daysInWeek.length; i++) {
+
+      weeks.add(i);
+      // "Week ${i + 1}: ${weeksOfMonth[i].map((d) => d.toString().split(' ')[0]).toList()}");
+    }
+    // Get today's date
+    DateTime today = selectedMonths;
+
+    // Format date as dd-MM-yyyy
+    String todayStr = "${today.day.toString().padLeft(2, '0')}-"
+        "${today.month.toString().padLeft(2, '0')}-"
+        "${today.year}";
+
+    // Find the index of the week containing today's date
+    selectedWeek = daysInWeek.indexWhere((week) => week.contains(todayStr));
+
+    employees=[];
+
+    for(int i=0;i<weekDays.length;i++){
+      DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(weekDays[i]);
+
+      // Format the parsed date to 'yyyy-MM-dd'
+      String formattedDate = DateFormat('dd-MM-yyyy').format(parsedDate);
+
+      employees.add(Employee(
+        formattedDate,
+        "00:00",
+        "Pending",
+        [],
+      ),);
+
+    }
+    List responseData = await getTimeSheet(fromDate: getDate(weekDays.first),toDate:getDate(weekDays.last));
+    for(int i=0;i<responseData.length;i++){
+      DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(responseData[i]['date']);
+
+      // Format the parsed date to 'yyyy-MM-dd'
+      String formattedDate = DateFormat('dd-MM-yyyy').format(parsedDate);
+      responseData[i]['date'] = formattedDate;
+      List<SubRow> subList =[];
+      for(int j =0;j<responseData[i]['timeSheet'].length;j++){
+        subList.add(
+          SubRow(responseData[i]['timeSheet'][j]['timesheet_id'],responseData[i]['timeSheet'][j]['project_name'], responseData[i]['timeSheet'][j]['project_id'], responseData[i]['timeSheet'][j]['wbs'], responseData[i]['timeSheet'][j]['daily_log'], window.sessionStorage["userType"] =="Department Head" ? responseData[i]['timeSheet'][j]['hod_status']:responseData[i]['timeSheet'][j]['status']),
+        );
+      }
+      for(int k=0;k<employees.length;k++ ) {
+        var tableData = employees[k];
+        if(tableData.date == responseData[i]['date']){
+
+          employees[k]= Employee(
+            formattedDate,
+            "${responseData[i]['totalHrs']}",
+            "Pending",
+            subList,
+          );
+
+        }
+      }
+
+
+    }
+
+
 
     setState(() {
 
     });
   }
 
-  getTimeSheet({required String date}) async {
-    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_date/$userId/$date";
+  getTimeSheet({required fromDate, required toDate}) async {
+
+    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/get_timesheet_by_userId_logDate/$userId/$fromDate/$toDate";
+    print(url);
     List tempData = await  getData(context: context,url: url);
     // Group by date
     Map groupedByDate = {};
@@ -94,7 +186,13 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
     List<Map> result = groupedByDate.entries.map((entry) {
       int totalMinutes = entry.value.fold(0, (sum, item) {
         final parts = item['daily_log']!.split(':');
-        return sum + int.parse(parts[0]) * 60 + int.parse(parts[1]);
+        try{
+          return sum + int.parse(parts[0]) * 60 + int.parse(parts[1]);
+        }
+        catch(e){
+          return 0;
+        }
+
       });
 
       String totalHrs = '${(totalMinutes ~/ 60).toString().padLeft(2, '0')}:${(totalMinutes % 60).toString().padLeft(2, '0')}';
@@ -105,75 +203,52 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
         "timeSheet": entry.value
       };
     }).toList();
+    Duration totalDuration = Duration();
+    for (var entry in result) {
+      List<String> parts = entry["totalHrs"].split(":");
+      int hours = int.parse(parts[0]);
+      int minutes = int.parse(parts[1]);
+      totalDuration += Duration(hours: hours, minutes: minutes);
+    }
 
+    String formattedTotal = "${totalDuration.inHours.toString().padLeft(2, '0')}:${(totalDuration.inMinutes % 60).toString().padLeft(2, '0')}";
+
+    print("Total Hours: $formattedTotal");
     if(result.isNotEmpty) {
-      widget.onTotalHoursUpdated(result[0]['totalHrs']);
+      widget.onTotalHoursUpdated(formattedTotal);
     }
     else{
       widget.onTotalHoursUpdated("0:00");
     }
     return result;
-
   }
-
-  getProjectList() async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/${window.sessionStorage["userId"]}";
-    var response = await getData(context: context,url: url);
-    if (response != null) {
-      projectData = response;
-      setState(() {
-
-      });
-    } else {
-      print('---- Failed to fetch project list ----');
-    }
-  }
-
-  getProjectWBSbyProjectName(String projectName) async{
-    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WbsNames_by_project_name/$projectName";
-    var response = await getData(context: context,url: url);
-    if (response != null) {
-      return response;
-      setState(() {
-
-      });
-    } else {
-      print('---- Failed to fetch project list ----');
-    }
-  }
-
-
-
-
   @override
-  void didUpdateWidget(covariant DayExpandableTable oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
+  void didUpdateWidget(covariant MonthlyTable oldWidget) {
 
+    super.didUpdateWidget(oldWidget);
     if(widget.userId!=null){
       userId = widget.userId!;
     }
     if(widget.userId != oldWidget.userId) {
       employees=[];
-      getInitialData(dateNow: widget.today);
+      getInitialData();
     }
-    else if (widget.today != oldWidget.today && oldWidget.today!=""){
-      employees=[];
-      getInitialData(dateNow: widget.today);
-    }
+    else
+    if (widget.weekDays != oldWidget.weekDays) {
+      weekDays = widget.weekDays;
+      employees = [];
+      getInitialData();
 
+    }
   }
 
-
-  List wbsList =[];
   @override
   Widget build(BuildContext context) {
     return Card(
       child: SingleChildScrollView(
         child: Column(
           children: [
-
-            const SizedBox(height: 30,),
+            const SizedBox(height: 20,),
             Container(decoration: BoxDecoration(color: Colors.grey[300]),
               child: ExpansionTile(
                 title: DataTable(
@@ -183,8 +258,8 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                     dataRowMaxHeight: 20, // Maximum row height
                     headingRowHeight: 20, // Reduce the height of column headers
                     columns:  const [
-                      DataColumn(label: SizedBox(width: 250,child: Text("Project Name",),),),
-                      DataColumn(label: SizedBox(width: 100,child: Text("Project ID",))),
+                      DataColumn(label: SizedBox(width: 100,child: Text("Project ID",),),),
+                      DataColumn(label: SizedBox(width: 100,child: Text("Project Name",))),
                       DataColumn(label: SizedBox(width: 100,child:Text("WBS",))),
                       DataColumn(label: SizedBox(width: 100,child:Text("Daily Log",))),
                       DataColumn(label: SizedBox(width: 100,child:Text("Approval Status",))),
@@ -215,7 +290,13 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                 SizedBox(width: 100,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      if(employee.subRows.last.timeSheetId!="" && employee.subRows.last.wbs!="")
+                                      if(employee.subRows.isEmpty){
+                                        employee.subRows.add( SubRow("","", "", "","",""),);
+                                        setState(() {
+
+                                        });
+                                      }
+                                      else if(employee.subRows.last.timeSheetId!="" && employee.subRows.last.wbs!="")
                                       {
                                         employee.subRows.add( SubRow("","", "", "","",""),);
                                         setState(() {
@@ -288,11 +369,11 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                       },
                                       onSelected: (value) async{
                                         value as Map;
-                                       List wbsDataList = await getProjectWBSbyProjectName(value['project_name'].toString());
-                                       wbsList= [];
-                                       for(int i=0;i<wbsDataList.length;i++){
-                                         wbsList.add(wbsDataList[i]['wbs_name']);
-                                       }
+                                        List wbsDataList = await getProjectWBSbyProjectName(value['project_name'].toString());
+                                        wbsList= [];
+                                        for(int i=0;i<wbsDataList.length;i++){
+                                          wbsList.add(wbsDataList[i]['wbs_name']);
+                                        }
 
                                         setState(() {
                                           employee.subRows[index].projectName=value['project_name'].toString();
@@ -375,70 +456,71 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                     ),
                                   ),)),
                             DataColumn(
-                                label: SizedBox(width: 100,
-                                  child:
-                                  (window.sessionStorage["userType"]=="Manager" || window.sessionStorage["userType"]=="Department Head") && (sub.status=="Pending") ? Row(
-                                    children: [
-                                      Tooltip(message: "Approve",child: SizedBox(width: 30,child:  Center(child: InkWell(child: const Icon(Icons.check_circle_sharp,color: Colors.green),onTap: (){
-                                        _showConfirmationDialog(context, "Approve", "Are you sure you want to approve?",sub);
+                              label: SizedBox(width: 100,
+                                child:
+                                (window.sessionStorage["userType"]=="Manager" || window.sessionStorage["userType"]=="Department Head") && (sub.status=="Pending") ? Row(
+                                  children: [
+                                    Tooltip(message: "Approve",child: SizedBox(width: 30,child:  Center(child: InkWell(child: const Icon(Icons.check_circle_sharp,color: Colors.green),onTap: (){
+                                      _showConfirmationDialog(context, "Approve", "Are you sure you want to approve?",sub);
 
-                                      })),)),
-                                      const SizedBox(width: 20),
-                                      Tooltip(message: "Reject",child: SizedBox(width: 20,child:  Center(child: InkWell(child: const Icon(Icons.cancel_outlined,color: Colors.red),onTap: (){
-                                        _showConfirmationDialog(context, "Reject", "Are you sure you want to reject?",sub);
+                                    })),)),
+                                    const SizedBox(width: 20),
+                                    Tooltip(message: "Reject",child: SizedBox(width: 20,child:  Center(child: InkWell(child: const Icon(Icons.cancel_outlined,color: Colors.red),onTap: (){
+                                      _showConfirmationDialog(context, "Reject", "Are you sure you want to reject?",sub);
 
-                                      })),)),
-                                    ],
-                                  ):
-                                  sub.status==""? Padding(
-                                      padding: const EdgeInsets.only(right: 0.0),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Map tempJson =  {
-                                            "daily_log":sub.logHrs,
-                                            "log_date": getDate( widget.today),
-                                            "project_id":  sub.projectId,
-                                            "project_name": sub.projectName,
-                                            "status": "pending",
-                                            "user_id": window.sessionStorage["userId"],
-                                            "hod_status":"Pending",
-                                            "wbs": sub.wbs,
-                                          };
-                                          print(tempJson);
+                                    })),)),
+                                  ],
+                                ):
+                                sub.status==""? Padding(
+                                    padding: const EdgeInsets.only(right: 0.0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        Map tempJson =  {
+                                          "daily_log":sub.logHrs,
+                                          "log_date": getDate(employee.date),
+                                          "project_id":  sub.projectId,
+                                          "project_name": sub.projectName,
+                                          "status": "pending",
+                                          "user_id": window.sessionStorage["userId"],
+                                          "hod_status":"Pending",
+                                          "wbs": sub.wbs,
+                                        };
+                                        print(tempJson);
 
-                                          List tempList =[];
-                                          tempList.add(tempJson);
-                                          
-                                          await postTimeSheet(tempList);
-                                          var dateNow = DateTime.now();
-                                          String date= "${dateNow.day}-${dateNow.month}-${dateNow.year}";
-                                          await getInitialData(dateNow :date);
+                                        List tempList =[];
+                                        tempList.add(tempJson);
 
-                                          setState(() {
+                                        await postTimeSheet(tempList);
+                                        var dateNow = DateTime.now();
+                                        String date= "${dateNow.day}-${dateNow.month}-${dateNow.year}";
+                                        await getInitialData();
 
-                                          });
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue,
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          elevation: 4,
+                                        setState(() {
+
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
+                                        elevation: 4,
+                                      ),
 
-                                        child: const Text('Save', style: TextStyle(color: Colors.white, fontSize: 16)),
-                                      )
+                                      child: const Text('Save', style: TextStyle(color: Colors.white, fontSize: 16)),
+                                    )
 
 
 
-                                  ):Text(
-                                    sub.status,
-                                    style: TextStyle(color: sub.status == "Completed" ? Colors.green : sub.status == "Pending" ? Colors.deepOrange : Colors.red),
-                                  ),
-                                    ),
-                                  )
-                                ]:[
+                                ):Text(
+                                  sub.status,
+                                  style: TextStyle(color: sub.status == "Completed" ? Colors.green : sub.status == "Pending" ? Colors.deepOrange : Colors.red),
+                                ),
+                              ),
+                            )
+                          ]:
+                          [
                             DataColumn(label: SizedBox(width: 100, child: Text(sub.timeSheetId))),
                             DataColumn(label: SizedBox(width: 100, child: Text(sub.projectId))),
                             DataColumn(label: SizedBox(width: 100, child: Text(sub.wbs))),
@@ -470,7 +552,9 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
       ),
     );
   }
-  void _showConfirmationDialog(BuildContext context, String action, String message, SubRow sub) {
+
+  void _showConfirmationDialog(BuildContext context, String action, String message, SubRow sub, ) {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -520,22 +604,14 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () async {
+                          onPressed: () {
                             Navigator.of(context).pop();
-                            Map tempJson = {};
-                            if(window.sessionStorage["userType"]=="Manager" ){
-                              tempJson['status'] =  action == "Approve" ?"Approved": "Rejected";
-                            }
-                            else if(window.sessionStorage["userType"]=="Department Head"){
-                              tempJson['hod_status'] =  action == "Approve" ?"Approved": "Rejected";
-                            }
-
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("$action successful")),
+                            );
                             setState(() {
-                              sub.status = action == "Approve" ?"Approved": "Rejected";
+                              sub.status ="Approved";
                             });
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$action successful")));
-
-                            await updateStatus(id: sub.timeSheetId, requestBody:tempJson);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: action == "Approve" ? Colors.green : Colors.red,
@@ -558,6 +634,7 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
     );
   }
 
+
   static customPopupDecoration({required String hintText}) {
     return InputDecoration(
       hoverColor: mHoverColor,
@@ -574,39 +651,50 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
   }
 
   Future postTimeSheet(List tempJson) async {
-    String url =
-        "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/add_timesheet";
-    print(url);
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        "Content-Type": "application/json",
-      },
-        body: json.encode(tempJson)
-    );
-    if (response.statusCode == 200) {
-      print(response.body);
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/add_timesheet";
+
+    var response = await postData(url: url,requestBody: tempJson,context: context);
+
+    if (response != null) {
+
     }
 
     return [];
   }
 
-  updateStatus({required String id, required Map<dynamic, dynamic> requestBody}) async{
-    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/patch_timesheet/$id";
-    var response = await updateData(url, requestBody);
+  getProjectList() async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/projectcreation/get_all_Projects_By_user_id/${window.sessionStorage["userId"]}";
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      projectData = response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch project list ----');
+    }
+  }
+
+  getProjectWBSbyProjectName(String projectName) async{
+    String url = "https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/wbs/get_WbsNames_by_project_name/$projectName";
+    var response = await getData(context: context,url: url);
+    if (response != null) {
+      return response;
+      setState(() {
+
+      });
+    } else {
+      print('---- Failed to fetch project list ----');
+    }
+  }
+
+  deleteById(String timeSheetId) async {
+    String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/delete_timesheet_by_id/$timeSheetId";
+    var response = await deleteApi(url);
     if(response!=null){
       print("Success");
     }
   }
-
-   deleteById(String timeSheetId) async {
-     String url ="https://6dtechnologies.cfapps.us10-001.hana.ondemand.com/api/timesheet/delete_timesheet_by_id/$timeSheetId";
-     var response = await deleteApi(url);
-     if(response!=null){
-       print("Success");
-     }
-   }
-
 }
 
 class Employee {
@@ -623,9 +711,8 @@ class Employee {
       );
 
   String calculateTotalLogHrs() {
-    int totalMinutes = subRows.fold(0, (sum, subRow) {
-      return sum + _convertToMinutes(subRow.logHrs);
-    });
+    int totalMinutes = subRows.fold(
+        0, (sum, subRow) => sum + _convertToMinutes(subRow.logHrs));
     return _convertToHoursMinutes(totalMinutes);
   }
 
@@ -667,26 +754,4 @@ class SubRow {
   String logHrs;
   String status;
   SubRow(this.timeSheetId,this.projectName,this.projectId,this.wbs, this.logHrs,this.status);
-}
-
-
-class TimeInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    String newValue2 =newValue.text;
-    if (newValue2.contains(':') && newValue2.length == 2) {
-      newValue2 = '0$newValue2';
-    }
-    /// if new value contains ":" and length is 2 add 0 to prefix
-    String text = newValue2.replaceAll(RegExp(r'[^0-9]'), '');
-
-    if (text.length > 2) {
-      text = '${text.substring(0, 2)}:${text.substring(2)}';
-    }
-
-    return newValue.copyWith(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
-    );
-  }
 }

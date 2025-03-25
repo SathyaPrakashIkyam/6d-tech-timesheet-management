@@ -8,6 +8,7 @@ import 'package:timesheet_management/project/list_projects.dart';
 import 'package:timesheet_management/project/project_view.dart';
 import 'package:timesheet_management/timesheet/list_timesheet.dart';
 import 'package:timesheet_management/timesheet/weekly_table.dart';
+import 'package:timesheet_management/timesheet_manager/list_timesheetm.dart';
 import 'package:timesheet_management/user%20management/create_user.dart';
 import 'package:timesheet_management/user%20management/user_list.dart';
 import 'package:timesheet_management/utils/classes/arguments_classes.dart';
@@ -77,6 +78,16 @@ class MyApp extends StatelessWidget {
               listTimesheetArguments = ListTimeSheetArguments(drawerWidth: 200, selectedDestination: 1);
             }
             newScreen =  ListTimesheet(args: listTimesheetArguments);
+          }
+          break;
+          case SixDRoutes.approveTimeSheet: {
+            ListTimeSheetMArguments listTimesheetArguments;
+            if(settings.arguments!=null) {
+              listTimesheetArguments = settings.arguments as ListTimeSheetMArguments;
+            } else {
+              listTimesheetArguments = ListTimeSheetMArguments(drawerWidth: 200, selectedDestination: 1);
+            }
+            newScreen =  ListTimesheetManager(args: listTimesheetArguments);
           }
           break;
           case SixDRoutes.userList: {

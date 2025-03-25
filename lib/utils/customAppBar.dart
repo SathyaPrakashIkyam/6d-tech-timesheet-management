@@ -107,6 +107,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     height = size.height;
     width = size.width;
     return AppBar(
+      title: Text("${window.sessionStorage["userName"]}",style: TextStyle(color: Colors.black)),
 
       automaticallyImplyLeading: false,
       leadingWidth: 190,

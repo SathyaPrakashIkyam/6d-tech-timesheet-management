@@ -202,7 +202,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           child: Icon(Icons.apps_rounded,
                             color: _selectedDestination == 0 ? Colors.blue: Colors.black54,),
                         ),
-                      ) else MouseRegion(
+                      ) else
+                        MouseRegion(
                           onHover: (event){
                             setState((){
                               homeHovered=true;
@@ -425,6 +426,65 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                         ),
                       ),
+
+                      /// Manager Time Sheet
+                      if(window.sessionStorage["userType"]=="Manager" || window.sessionStorage["userType"]=="Department Head")
+                      ...[
+                        drawerWidth==60?
+                        InkWell(
+                          hoverColor: mHoverColor,
+                          onTap: (){
+                            setState(() {
+                              drawerWidth = 200;
+                            });
+                          },
+                          child: SizedBox(height: 40,
+                            child: Icon(Icons.timelapse_outlined,
+                              color: _selectedDestination == 4 ? Colors.black: Colors.white,),
+                          ),
+                        ):
+                        MouseRegion(
+                          onHover: (event){
+                            setState((){
+                              homeHovered=true;
+                            });
+                          },
+                          onExit: (event){
+                            setState(() {
+                              homeHovered=false;
+                            });
+
+                          },
+                          child: Padding(
+                            padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
+                            child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==4 ? Colors.white:Colors.transparent,),
+
+                              child: ListTileTheme(
+                                contentPadding: const EdgeInsets.only(left: 0),
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, "/approve-timesheet",arguments: ListTimeSheetMArguments(drawerWidth: drawerWidth,selectedDestination: 4));
+                                    // Navigator.pushReplacementNamed(context, "/wbs");
+                                  },
+                                  leading:  SizedBox(width: 40,child: Padding(
+                                    padding: const EdgeInsets.only(left: 4.0),
+                                    child: Icon(Icons.timelapse_outlined,color: _selectedDestination==4? Colors.black:Colors.white),
+                                  ),),
+                                  title:    Padding(
+                                    padding: const EdgeInsets.only(left: 8.0,right: 10),
+                                    child: Text(
+                                      drawerWidth == 60 ? '' : 'Approve Time Sheet',
+                                      style:  TextStyle(fontSize: 17,color: _selectedDestination==4? Colors.black:Colors.white),
+
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
 
                     ],
                   ),
@@ -874,6 +934,62 @@ class _AppBarDrawerState extends State<AppBarDrawer> {
                         ),
                       ),
 
+
+                      /// Manager Time Sheet
+                      drawerWidth==60?
+                      InkWell(
+                        hoverColor: mHoverColor,
+                        onTap: (){
+                          setState(() {
+                            drawerWidth = 200;
+                          });
+                        },
+                        child: SizedBox(height: 40,
+                          child: Icon(Icons.timelapse_outlined,
+                            color: _selectedDestination == 3 ? Colors.black: Colors.white,),
+                        ),
+                      ):
+                      MouseRegion(
+                        onHover: (event){
+                          setState((){
+                            homeHovered=true;
+                          });
+                        },
+                        onExit: (event){
+                          setState(() {
+                            homeHovered=false;
+                          });
+
+                        },
+                        child: Padding(
+                          padding:  const EdgeInsets.only(left: 14,right: 14,bottom: 4,top: 4),
+                          child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color:_selectedDestination==3 ? Colors.white:Colors.transparent,),
+
+                            child: ListTileTheme(
+                              contentPadding: const EdgeInsets.only(left: 0),
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/timesheet",arguments: ListTimeSheetArguments(drawerWidth: drawerWidth,selectedDestination: 3));
+                                  // Navigator.pushReplacementNamed(context, "/wbs");
+                                },
+                                leading:  SizedBox(width: 40,child: Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.timelapse_outlined,color: _selectedDestination==3? Colors.black:Colors.white),
+                                ),),
+                                title:    Padding(
+                                  padding: const EdgeInsets.only(left: 8.0,right: 10),
+                                  child: Text(
+                                    drawerWidth == 60 ? '' : 'Time Sheet',
+                                    style:  TextStyle(fontSize: 17,color: _selectedDestination==3? Colors.black:Colors.white),
+
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
 
                       // /// Attendance
                       // drawerWidth==60?
