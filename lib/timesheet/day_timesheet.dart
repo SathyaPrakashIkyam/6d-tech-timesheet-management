@@ -354,15 +354,50 @@ class _DayExpandableTableState extends State<DayExpandableTable> {
                                   width: 100, child: TextField(
                                     controller: timeController,
                                     keyboardType: TextInputType.number,style: const TextStyle(fontSize: 14),
-                                    onChanged: (v){
-                                      sub.logHrs=v;
-                                      employee.logHrs=employee.calculateTotalLogHrs();
-                                      widget.onTotalHoursUpdated(employee.calculateTotalHeaderHours(employees));
-                                      setState(() {
+                                    // onChanged: (v){
+                                    //   sub.logHrs=v;
+                                    //   employee.logHrs=employee.calculateTotalLogHrs();
+                                    //   widget.onTotalHoursUpdated(employee.calculateTotalHeaderHours(employees));
+                                    //   setState(() {
+                                    //
+                                    //
+                                    //   });
+                                    // },
+                                    onChanged: (v) {
+                                      if (v.isEmpty || !v.contains(":")) {
+                                        return;
+                                      }
 
+                                      List<String> parts = v.split(":");
 
-                                      });
+                                      if (parts.length == 2) {
+                                        int hours = int.tryParse(parts[0]) ?? 0;
+                                        int minutes = int.tryParse(parts[1]) ?? 0;
+                                        int totalMinutes = (hours * 60) + minutes;
+
+                                        if (totalMinutes > 480) {
+                                          if (ScaffoldMessenger.of(context).mounted) {
+                                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text("Logged hours cannot exceed 08:00"),
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          }
+                                          timeController.clear();
+                                          sub.logHrs = "";
+                                          setState(() {});
+                                          return;
+                                        }
+                                        sub.logHrs = v;
+                                        employee.logHrs = employee.calculateTotalLogHrs();
+                                        widget.onTotalHoursUpdated(employee.calculateTotalHeaderHours(employees));
+
+                                        setState(() {}); // Trigger UI update
+                                      }
                                     },
+
                                     inputFormatters: [
 
                                       LengthLimitingTextInputFormatter(5), // Limit to 4 digits
